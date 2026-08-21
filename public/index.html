@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thanabodee / NAV — WebGL Liquid Glass Camera Lens</title>
+    <title>Thanabodee / NAV — Liquid Glass Camera Hub</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,10 +43,10 @@
 
     <style>
         /* ============================================================
-           THREE.JS / WEBGL LIQUID GLASS STYLING (PURE WEBCAM + LENS)
+           FLOATING LIQUID GLASS BOX SYSTEM (Every Card is a Liquid Box)
            ============================================================ */
 
-        /* WebGL Canvas */
+        /* WebGL Live Camera Canvas */
         #webgl-canvas {
             position: fixed;
             inset: 0;
@@ -56,41 +56,43 @@
             pointer-events: none;
         }
 
-        /* Pure Dark Liquid Glass Overlays */
+        /* Pure Dark Liquid Glass Main Shell */
         .liquid-panel {
-            background: rgba(8, 11, 16, 0.4);
-            backdrop-filter: blur(20px) saturate(160%);
-            -webkit-backdrop-filter: blur(20px) saturate(160%);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: inset 0 0 2px 1px #ffffff59, 
-                        inset 0 0 10px 4px #ffffff26, 
-                        inset 0 4px 16px rgba(17, 17, 26, 0.25), 
-                        0 24px 48px -12px rgba(0, 0, 0, 0.7);
+            background: rgba(8, 11, 16, 0.45);
+            backdrop-filter: blur(24px) saturate(160%);
+            -webkit-backdrop-filter: blur(24px) saturate(160%);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            box-shadow: inset 0 0 2px 1.5px rgba(255, 255, 255, 0.45), 
+                        inset 0 0 16px 4px rgba(255, 255, 255, 0.16), 
+                        inset 0 8px 32px rgba(17, 17, 26, 0.35), 
+                        0 24px 48px -12px rgba(0, 0, 0, 0.75);
         }
 
+        /* Floating Liquid Glass Box Cards */
         .liquid-card {
-            background: rgba(255, 255, 255, 0.035);
-            backdrop-filter: blur(14px) saturate(140%);
-            -webkit-backdrop-filter: blur(14px) saturate(140%);
-            box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.25), 
-                        inset 0 0 8px 2px rgba(255, 255, 255, 0.1), 
-                        0 4px 20px -2px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.09);
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(18px) saturate(160%);
+            -webkit-backdrop-filter: blur(18px) saturate(160%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: inset 0 0 2px 1.5px rgba(255, 255, 255, 0.4), 
+                        inset 0 0 12px 3px rgba(255, 255, 255, 0.12), 
+                        inset 0 6px 28px rgba(0, 0, 0, 0.4), 
+                        0 12px 28px -6px rgba(0, 0, 0, 0.5);
             position: relative;
             transform-style: preserve-3d;
             will-change: transform;
-            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-                        border-color 0.2s ease,
-                        box-shadow 0.2s ease,
-                        background 0.2s ease;
+            transition: border-color 0.25s ease,
+                        box-shadow 0.25s ease,
+                        background 0.25s ease;
         }
 
+        /* Specular Liquid Cursor Follower on Card */
         .liquid-card::before {
             content: '';
             position: absolute;
             inset: 0;
             border-radius: inherit;
-            background: radial-gradient(380px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.07), transparent 70%);
+            background: radial-gradient(320px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.12), transparent 70%);
             opacity: 0;
             transition: opacity 0.25s ease;
             pointer-events: none;
@@ -102,32 +104,35 @@
         }
 
         .liquid-card:hover {
-            border-color: rgba(255, 255, 255, 0.22);
-            box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.45), 
-                        inset 0 0 12px 4px rgba(255, 255, 255, 0.18), 
-                        0 16px 36px -8px rgba(0, 0, 0, 0.6);
+            background: rgba(255, 255, 255, 0.065);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: inset 0 0 2px 1.5px rgba(255, 255, 255, 0.6), 
+                        inset 0 0 16px 5px rgba(255, 255, 255, 0.22), 
+                        inset 0 8px 36px rgba(0, 0, 0, 0.45), 
+                        0 20px 44px -8px rgba(0, 0, 0, 0.7);
         }
 
         .liquid-inner {
-            background: rgba(255, 255, 255, 0.025);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
         }
 
         .liquid-pill {
             background: rgba(0, 0, 0, 0.35);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.2), 0 2px 8px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.25), 0 2px 8px rgba(0, 0, 0, 0.35);
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .liquid-pill:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
             transform: translateY(-1px);
+            box-shadow: inset 0 0 3px 1.5px rgba(255, 255, 255, 0.4), 0 4px 12px rgba(0, 0, 0, 0.45);
         }
 
         /* Modern Scrollbar */
@@ -141,7 +146,7 @@
 <body class="bg-[#080B10] text-slate-200 font-body min-h-screen relative overflow-x-hidden selection:bg-slate-700 selection:text-white transition-colors duration-300">
 
     <!-- ========================================================= -->
-    <!-- THREE.JS WEBGL GLSL LIQUID GLASS SHADER CANVAS            -->
+    <!-- THREE.JS WEBGL LIVE CAMERA CANVAS                         -->
     <!-- ========================================================= -->
     <canvas id="webgl-canvas"></canvas>
 
@@ -484,7 +489,7 @@
                         <span>Thanabodee AI Hub</span>
                     </div>
                     <p class="text-[10px] text-slate-600 font-mono">
-                        Powered by WebGL GLSL Liquid Refraction & Three.js Shader Engine.
+                        Powered by Realtime WebGL Camera & Floating Liquid Glass Boxes.
                     </p>
                 </footer>
 
@@ -573,19 +578,17 @@
     </div>
 
     <!-- ========================================================= -->
-    <!-- THREE.JS WEBGL GLSL LIQUID GLASS SHADER SCRIPT            -->
+    <!-- THREE.JS WEBGL CAMERA & FLOATING LIQUID SCRIPT            -->
     <!-- ========================================================= -->
     <script>
         // Initialize Lucide Icons
         lucide.createIcons();
 
         // ==========================================
-        // 1. THREE.JS GLSL LIQUID GLASS ENGINE (WEBCAM + INTERACTIVE LENS)
+        // 1. THREE.JS FULLSCREEN LIVE CAMERA PIPELINE
         // ==========================================
         let renderer, scene, camera, material, mesh;
         let defaultTexture, videoTexture;
-        let mouse = new THREE.Vector2(0, 0);
-        let targetMouse = new THREE.Vector2(0, 0);
 
         const vertexShader = `
             varying vec2 vUv;
@@ -599,83 +602,19 @@
             varying vec2 vUv;
             uniform vec2 uRes;
             uniform vec2 uTexRes;
-            uniform vec2 uMouse;
             uniform sampler2D uTexture;
             
-            #define PI    3.14159265
-            #define S     smoothstep
-            #define R     uRes
-            #define PX(a) (a/R.y)
-            
             vec2 CoverUV(vec2 u, vec2 s, vec2 i) {
-                float rs = s.x / s.y; // Aspect screen size
-                float ri = i.x / i.y; // Aspect image size
+                float rs = s.x / s.y;
+                float ri = i.x / i.y;
                 vec2 st = rs < ri ? vec2(i.x * s.y / i.y, s.y) : vec2(s.x, i.y * s.x / i.x);
                 vec2 o = (rs < ri ? vec2((st.x - s.x) / 2.0, 0.0) : vec2(0.0, (st.y - s.y) / 2.0)) / st;
                 return u * s / st + o;
             }
-            
-            mat2 Rot (float a) {
-                return mat2(cos(a), sin(-a), sin(a), cos(a)); 
-            }
-
-            float Box (vec2 p, vec2 b) {
-                vec2 d = abs(p) - b;
-                return length(max(d, 0.)) + min(max(d.x, d.y), 0.);
-            }
-
-            float IconPhoto (vec2 uv) {
-                float c = 0.;
-                for (float i = 0.; i < 1.; i += 1./8.) {
-                    vec2 u = uv;
-                    u *= Rot(i * 2. * PI);
-                    u += vec2(0., PX(40.));
-                    float b = Box(u, vec2(PX(0.), PX(13.)));
-                    c += S(PX(1.5), 0., b - PX(15.)) * .2;
-                }
-                return c;
-            }
-
-            vec4 LiquidGlass (sampler2D tex, vec2 uv, float direction, float quality, float size) {
-                vec2 radius = size / R;
-                vec4 color = texture2D(tex, uv);
-
-                for (float d = 0.; d < PI; d += PI/direction) {
-                    for (float i = 1./quality; i <= 1.; i += 1./quality) {
-                        color += texture2D(tex, uv + vec2(cos(d), sin(d)) * radius * i);		
-                    }
-                }
-
-                color /= (quality * direction);
-                return color;
-            }
-
-            vec4 Icon (vec2 uv) {
-                float box = Box(uv, vec2(PX(60.)));
-                float boxShape = S(PX(2.0), 0., box - PX(60.));
-                float boxDisp = S(PX(40.), 0., box - PX(30.));
-                float boxLight = boxShape * S(0., PX(35.), box - PX(50.));
-                float icon = IconPhoto(uv);
-                return vec4(boxShape, boxDisp, boxLight, icon);
-            }
 
             void main() {
                 vec2 uv = CoverUV(vUv, uRes, uTexRes);
-                vec2 st = (gl_FragCoord.xy - 0.5 * R) / R.y;
-                vec2 M  = uMouse * 0.5;
-                M.x *= uRes.x / uRes.y;
-                
-                vec3 tex = texture2D(uTexture, uv).rgb;
-                vec4 icon = Icon(st - M);
-            
-                vec2 uv2 = uv - M;
-                uv2 *= S(-0.6, 1.0, icon.y);
-                uv2 += M;
-
-                // Sharp live camera background + Interactive Liquid Glass Lens refraction
-                vec3 col = mix(tex * 0.95, 0.05 + LiquidGlass(uTexture, uv2, 10.0, 10.0, 26.0).rgb * 0.9, icon.x);
-                col += icon.z * 0.95 + icon.w;
-
+                vec3 col = texture2D(uTexture, uv).rgb;
                 gl_FragColor = vec4(col, 1.0);
             }
         `;
@@ -705,7 +644,6 @@
             defaultTexture = createDarkPlaceholderTexture();
 
             const uniforms = {
-                uMouse: { value: new THREE.Vector2(0, 0) },
                 uRes: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
                 uTexRes: { value: new THREE.Vector2(1920, 1080) },
                 uTexture: { value: defaultTexture }
@@ -722,10 +660,12 @@
             scene.add(mesh);
 
             window.addEventListener('resize', onWindowResize);
-            window.addEventListener('mousemove', onMouseMove);
-            window.addEventListener('touchmove', onTouchMove, { passive: true });
 
-            animate();
+            function renderLoop() {
+                requestAnimationFrame(renderLoop);
+                renderer.render(scene, camera);
+            }
+            renderLoop();
 
             // Auto-start webcam so live feed is immediately active
             initCamera();
@@ -740,61 +680,61 @@
             material.uniforms.uRes.value.set(w, h);
         }
 
-        function onMouseMove(e) {
-            targetMouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-            targetMouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-        }
-
-        function onTouchMove(e) {
-            if (e.touches.length > 0) {
-                targetMouse.x = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
-                targetMouse.y = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
-            }
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-
-            // Smooth Lerp Mouse/Touch Tracking
-            mouse.x += (targetMouse.x - mouse.x) * 0.08;
-            mouse.y += (targetMouse.y - mouse.y) * 0.08;
-
-            if (material) {
-                material.uniforms.uMouse.value.copy(mouse);
-            }
-
-            renderer.render(scene, camera);
-        }
-
         // Initialize WebGL Scene
         initWebGLScene();
 
         // ==========================================
-        // 2. REFINED 3D CARD TILT INTERACTION
+        // 2. FLOATING LIQUID GLASS CARDS (PHYSICS LERP TRACKING)
         // ==========================================
-        function initCardTiltInteraction() {
+        function initFloatingLiquidCards() {
             const cards = document.querySelectorAll('.tilt-card');
+            let targetX = 0;
+            let targetY = 0;
+            let currentX = 0;
+            let currentY = 0;
+
+            window.addEventListener('mousemove', (e) => {
+                targetX = (e.clientX / window.innerWidth - 0.5) * 2;
+                targetY = (e.clientY / window.innerHeight - 0.5) * 2;
+            });
+
+            window.addEventListener('touchmove', (e) => {
+                if (e.touches.length > 0) {
+                    targetX = (e.touches[0].clientX / window.innerWidth - 0.5) * 2;
+                    targetY = (e.touches[0].clientY / window.innerHeight - 0.5) * 2;
+                }
+            }, { passive: true });
+
             cards.forEach(card => {
                 card.addEventListener('mousemove', (e) => {
                     const rect = card.getBoundingClientRect();
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
-                    
                     card.style.setProperty('--mouse-x', `${(x / rect.width) * 100}%`);
                     card.style.setProperty('--mouse-y', `${(y / rect.height) * 100}%`);
-
-                    const rotateY = ((x / rect.width) - 0.5) * 2.4;
-                    const rotateX = ((y / rect.height) - 0.5) * -2.4;
-
-                    card.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.004, 1.004, 1.004)`;
-                });
-
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
                 });
             });
+
+            function updateCardsPhysics() {
+                requestAnimationFrame(updateCardsPhysics);
+
+                // Fluid Lerp Smooth Tracking
+                currentX += (targetX - currentX) * 0.08;
+                currentY += (targetY - currentY) * 0.08;
+
+                cards.forEach((card, index) => {
+                    const depthFactor = 1 + (index % 3) * 0.2;
+                    const floatX = currentX * 10 * depthFactor;
+                    const floatY = currentY * 8 * depthFactor;
+                    const rotX = -currentY * 3.5;
+                    const rotY = currentX * 3.5;
+
+                    card.style.transform = `perspective(1000px) translate3d(${floatX.toFixed(2)}px, ${floatY.toFixed(2)}px, 0px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg)`;
+                });
+            }
+            updateCardsPhysics();
         }
-        initCardTiltInteraction();
+        initFloatingLiquidCards();
 
         // ==========================================
         // 3. REALTIME CAMERA FEED INTO WEBGL TEXTURE
