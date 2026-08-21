@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="th" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanabodee / NAV — Precision Liquid Glass Hub</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Plus Jakarta Sans', 'Chakra Petch', 'sans-serif'],
+                        tech: ['Chakra Petch', 'sans-serif'],
+                        body: ['Plus Jakarta Sans', 'Sarabun', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        premium: {
+                            accent: '#10B981',
+                            dark: '#080B10',
+                            card: 'rgba(255, 255, 255, 0.03)',
+                            cardBorder: 'rgba(255, 255, 255, 0.07)',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* ============================================================
+           PREMIUM HIGH-PRECISION LIQUID GLASS (Minimalist / Refined)
+           ============================================================ */
+
+        /* --- PURE DARK LIQUID GLASS --- */
+        .liquid-panel {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.015) 100%);
+            backdrop-filter: blur(24px) saturate(160%);
+            -webkit-backdrop-filter: blur(24px) saturate(160%);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.7),
+                        inset 0 1px 0 0 rgba(255, 255, 255, 0.16);
+        }
+
+        .liquid-card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+            backdrop-filter: blur(20px) saturate(150%);
+            -webkit-backdrop-filter: blur(20px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4),
+                        inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+            position: relative;
+            transform-style: preserve-3d;
+            will-change: transform;
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.2s ease,
+                        box-shadow 0.2s ease,
+                        background 0.2s ease;
+        }
+
+        /* Subtle Neutral Specular Spotlight on Hover */
+        .liquid-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: radial-gradient(380px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.06), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.25s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .liquid-card:hover::before {
+            opacity: 1;
+        }
+
+        .liquid-card:hover {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border-color: rgba(255, 255, 255, 0.18);
+            box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.6),
+                        inset 0 1px 0 0 rgba(255, 255, 255, 0.24);
+        }
+
+        .liquid-inner {
+            background: rgba(255, 255, 255, 0.025);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+        }
+
+        .liquid-pill {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3),
+                        inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .liquid-pill:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4),
+                        inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+        }
+
+        /* Subtle Precision Background Orbs */
+        @keyframes ambient-drift-1 {
+            0%, 100% { transform: translate(0px, 0px); }
+            50% { transform: translate(25px, 20px); }
+        }
+        @keyframes ambient-drift-2 {
+            0%, 100% { transform: translate(0px, 0px); }
+            50% { transform: translate(-20px, -15px); }
+        }
+
+        .animate-drift-1 { animation: ambient-drift-1 16s ease-in-out infinite; }
+        .animate-drift-2 { animation: ambient-drift-2 20s ease-in-out infinite; }
+
+        /* Camera Blur Options */
+        .camera-blur-none { filter: blur(0px) brightness(1.0) contrast(1.0); }
+        .camera-blur-soft { filter: blur(6px) brightness(1.02) contrast(1.02); }
+        .camera-blur-medium { filter: blur(14px) brightness(1.0) contrast(1.04); }
+        .camera-blur-heavy { filter: blur(24px) brightness(0.98) contrast(1.06); }
+
+        /* Modern Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 99px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+    </style>
+</head>
+
+<body class="bg-[#080B10] text-slate-200 font-body min-h-screen relative overflow-x-hidden selection:bg-slate-700 selection:text-white transition-colors duration-300">
+
+    <!-- ========================================================= -->
+    <!-- REALTIME CAMERA, FREEZE FRAME & QUIET AMBIENT BACKGROUND  -->
+    <!-- ========================================================= -->
+    <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        <!-- Live Video Stream -->
+        <video id="webcam-video" autoplay playsinline muted class="absolute inset-0 w-full h-full object-cover scale-105 opacity-0 transition-all duration-700 camera-blur-soft"></video>
+
+        <!-- Frozen Last Frame Canvas -->
+        <canvas id="freeze-canvas" class="absolute inset-0 w-full h-full object-cover scale-105 opacity-0 transition-opacity duration-700 camera-blur-soft"></canvas>
+
+        <!-- Neutral Ambient Canvas -->
+        <canvas id="ambient-canvas" class="absolute inset-0 w-full h-full opacity-50 transition-opacity duration-700"></canvas>
+
+        <!-- Deep Ambient Gradients -->
+        <div class="absolute -top-32 -left-20 w-[32rem] h-[32rem] rounded-full bg-emerald-950/20 blur-[120px] animate-drift-1 pointer-events-none"></div>
+        <div class="absolute top-1/2 -right-32 w-[34rem] h-[34rem] rounded-full bg-slate-900/40 blur-[140px] animate-drift-2 pointer-events-none"></div>
+
+        <!-- Balanced Surface Tint -->
+        <div class="absolute inset-0 bg-gradient-to-b from-[#080B10]/45 via-[#080B10]/20 to-[#080B10]/55 backdrop-blur-[1px]"></div>
+        <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px); background-size: 24px 24px;"></div>
+    </div>
+
+    <!-- TOP FLOATING UTILITY CONTROLS -->
+    <header class="fixed top-4 right-4 z-40 flex items-center gap-2">
+        <!-- Camera Flip Button (Front / Rear Toggle) -->
+        <button onclick="flipCameraFacing()" id="cam-flip-btn" class="hidden p-2 rounded-full liquid-pill text-slate-400 hover:text-white active:scale-95 transition-all" title="Flip Camera">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+        </button>
+
+        <!-- Camera Toggle Pill -->
+        <button onclick="toggleCamera()" id="cam-toggle-btn" class="px-3.5 py-1.5 rounded-full liquid-pill text-[11px] font-mono font-medium flex items-center gap-2 hover:border-white/20 active:scale-95 text-slate-300">
+            <span class="w-1.5 h-1.5 rounded-full bg-slate-500" id="cam-indicator"></span>
+            <span id="cam-status-label">CAM: OFF</span>
+        </button>
+
+        <!-- Camera Blur Level Selector -->
+        <div class="hidden sm:flex items-center p-0.5 rounded-full liquid-pill text-[10px] font-mono">
+            <button onclick="setBlurLevel('none')" id="blur-none" class="px-2.5 py-1 rounded-full text-slate-400 hover:text-white transition-colors">CLEAR</button>
+            <button onclick="setBlurLevel('soft')" id="blur-soft" class="px-2.5 py-1 rounded-full bg-slate-800 text-white font-semibold transition-colors border border-white/10">SOFT</button>
+            <button onclick="setBlurLevel('medium')" id="blur-medium" class="px-2.5 py-1 rounded-full text-slate-400 hover:text-white transition-colors">MED</button>
+            <button onclick="setBlurLevel('heavy')" id="blur-heavy" class="px-2.5 py-1 rounded-full text-slate-400 hover:text-white transition-colors">DEEP</button>
+        </div>
+
+        <!-- Share Button -->
+        <button onclick="openShareModal()" class="p-2 rounded-full liquid-pill text-slate-400 hover:text-white active:scale-95" title="Share Hub">
+            <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+        </button>
+    </header>
+
+    <!-- MAIN APPLICATION CONTAINER -->
+    <div class="max-w-md sm:max-w-lg mx-auto pt-10 sm:pt-14 min-h-screen flex flex-col justify-between relative z-10 px-3 sm:px-0">
+        
+        <div>
+            <!-- ========================================================= -->
+            <!-- TOP SECTION: AVATAR & TYPOGRAPHY                          -->
+            <!-- ========================================================= -->
+            <section class="flex flex-col items-center text-center px-4 mb-8 sm:mb-10">
+                
+                <!-- Circular Avatar Frame with Refined Glass Ring -->
+                <div class="relative mb-5 group">
+                    <div class="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1.5 liquid-panel overflow-hidden flex items-center justify-center">
+                        <div class="w-full h-full rounded-full bg-slate-900 shadow-inner overflow-hidden flex items-center justify-center border border-white/5">
+                            <svg class="w-full h-full pt-1.5" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="50" r="48" fill="#111827"/>
+                                <circle cx="50" cy="40" r="30" fill="#10B981" opacity="0.15"/>
+                                <circle cx="50" cy="36" r="18" fill="#F3F4F6"/>
+                                <rect x="36" y="32" width="12" height="8" rx="2" fill="#0F172A" stroke="#10B981" stroke-width="1.2"/>
+                                <rect x="52" y="32" width="12" height="8" rx="2" fill="#0F172A" stroke="#10B981" stroke-width="1.2"/>
+                                <line x1="48" y1="36" x2="52" y2="36" stroke="#10B981" stroke-width="1.2"/>
+                                <path d="M28 36C28 22 38 16 50 16C62 16 72 22 72 36" stroke="#64748B" stroke-width="1.5" stroke-linecap="round"/>
+                                <circle cx="28" cy="36" r="2.5" fill="#10B981"/>
+                                <path d="M22 66C22 55 34 52 50 52C66 52 78 55 78 66V90H22V66Z" fill="#1E293B"/>
+                                <path d="M42 52L50 64L58 52" stroke="#10B981" stroke-width="1.2"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Status Pill -->
+                    <span class="absolute bottom-1 right-1 liquid-pill text-emerald-400 font-mono text-[9px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                        <span id="cam-badge-text">NAV</span>
+                    </span>
+                </div>
+
+                <!-- Text Header -->
+                <div class="space-y-2 max-w-sm mx-auto">
+                    <h1 class="font-display font-bold text-2xl sm:text-3xl tracking-tight text-white flex items-center justify-center gap-2">
+                        <span>THANABODEE / NAV</span>
+                    </h1>
+
+                    <p class="font-tech font-semibold text-xs sm:text-sm text-emerald-400 tracking-wider uppercase">
+                        Master AI Builder & Corporate AI Trainer
+                    </p>
+
+                    <p class="font-body text-xs sm:text-sm text-slate-400 font-normal leading-relaxed">
+                        AI Agents • Thai Voice AI • Applied Research
+                    </p>
+
+                    <div class="pt-1 flex items-center justify-center">
+                        <span class="liquid-pill text-slate-400 font-mono text-[10px] px-3.5 py-1 rounded-full flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                            <span>BANGKOK, THAILAND 🇹🇭</span>
+                            <span class="text-slate-600">•</span>
+                            <span class="text-slate-200 font-medium">NOUNX LAB</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Primary CTA Button -->
+                <div class="mt-6 w-full max-w-xs">
+                    <button onclick="openBookingDrawer()" class="w-full py-3.5 px-6 rounded-2xl bg-white/10 hover:bg-white/15 text-white font-display font-semibold text-xs tracking-wider uppercase flex items-center justify-center gap-2 transition-all shadow-lg active:scale-98 border border-white/15 backdrop-blur-md">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-emerald-400"></i>
+                        <span>WORK WITH ME / WORKSHOP</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ================================================================= -->
+            <!-- MAIN ULTRA-CLEAR LIQUID GLASS CONTAINER                           -->
+            <!-- ================================================================= -->
+            <main class="liquid-panel rounded-t-[40px] sm:rounded-t-[52px] p-5 sm:p-7 relative overflow-hidden">
+                
+                <!-- Micro Accent Line -->
+                <div class="w-10 h-0.5 bg-white/15 rounded-full mx-auto mb-6"></div>
+
+                <!-- SECTION 01: FEATURED PRODUCTS -->
+                <section class="space-y-4 mb-8">
+                    <div class="flex items-center justify-between border-b border-white/5 pb-2.5">
+                        <span class="font-mono text-[10px] font-semibold text-emerald-400 tracking-widest uppercase flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                            01 / FEATURED PRODUCTS
+                        </span>
+                        <span class="text-[10px] font-mono text-slate-500">NounX Lab</span>
+                    </div>
+
+                    <!-- PRODUCT 1: VOICE TWO -->
+                    <div class="liquid-card rounded-2xl p-4 sm:p-5 relative overflow-hidden group tilt-card">
+                        <div class="flex items-start justify-between gap-3 mb-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-xl liquid-inner flex items-center justify-center text-emerald-400">
+                                    <i data-lucide="mic" class="w-4 h-4"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <h3 class="font-display font-bold text-base text-white">
+                                            Voice Two
+                                        </h3>
+                                        <span class="px-2 py-0.5 text-[9px] font-mono rounded-full liquid-inner text-emerald-400 font-medium">
+                                            PLATFORM
+                                        </span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-400 font-mono">voicetwo.ai • Thai Voice AI Synthesis</p>
+                                </div>
+                            </div>
+
+                            <a href="https://voicetwo.ai" target="_blank" rel="noopener" class="p-2 rounded-xl liquid-pill text-slate-400 hover:text-white transition-all" title="Explore Voice Two">
+                                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+                            </a>
+                        </div>
+
+                        <p class="text-xs text-slate-400 font-normal leading-relaxed mb-4">
+                            แพลตฟอร์มสังเคราะห์เสียงพูดภาษาไทยความหน่วงต่ำ ถอดอารมณ์ วรรณยุกต์ และน้ำเสียงไทยได้แม่นยำ สำหรับ Creator และ Enterprise.
+                        </p>
+
+                        <!-- Voice Synthesizer Studio Preview -->
+                        <div class="p-3.5 rounded-xl liquid-inner space-y-2.5">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-slate-300 font-semibold flex items-center gap-1.5">
+                                    <i data-lucide="volume-2" class="w-3.5 h-3.5 text-emerald-400"></i>
+                                    <span>Thai Voice Synth Studio</span>
+                                </span>
+                                <select id="voice-preset" onchange="updateVoicePitch()" class="bg-slate-900/90 border border-white/10 rounded-md px-2 py-0.5 text-[10px] text-slate-300 font-mono focus:outline-none shadow-sm">
+                                    <option value="thai-male">ชายไทยมาตรฐาน (Warm Male)</option>
+                                    <option value="thai-female">หญิงไทยสดใส (Bright Female)</option>
+                                    <option value="narrator">ผู้ประกาศข่าว (News Narrator)</option>
+                                </select>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <button id="synth-play-btn" onclick="toggleThaiAudioSynth()" class="py-2 px-3.5 rounded-lg bg-emerald-600/90 hover:bg-emerald-600 text-white font-display font-semibold text-xs flex items-center justify-center shrink-0 transition-transform active:scale-95 shadow-sm border border-emerald-500/20">
+                                    <i data-lucide="play" id="synth-icon-play" class="w-3.5 h-3.5 fill-current mr-1"></i>
+                                    <i data-lucide="square" id="synth-icon-stop" class="w-3.5 h-3.5 fill-current mr-1 hidden"></i>
+                                    <span id="synth-btn-label">TEST VOICE</span>
+                                </button>
+
+                                <div class="flex-1 h-9 bg-slate-950/60 rounded-lg border border-white/5 relative overflow-hidden flex items-center justify-center p-1">
+                                    <canvas id="waveform-canvas" class="w-full h-full block"></canvas>
+                                    <span id="synth-status-text" class="absolute inset-0 flex items-center justify-center text-[10px] font-mono text-slate-500 pointer-events-none">
+                                        กด Test Voice เพื่อทดสอบคลื่นเสียง
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PRODUCT 2: PROOFME -->
+                    <div class="liquid-card rounded-2xl p-4 sm:p-5 relative overflow-hidden group tilt-card">
+                        <div class="flex items-start justify-between gap-3 mb-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-xl liquid-inner flex items-center justify-center text-slate-300">
+                                    <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <h3 class="font-display font-bold text-base text-white">
+                                            ProofMe
+                                        </h3>
+                                        <span class="px-2 py-0.5 text-[9px] font-mono rounded-full liquid-inner text-slate-300 font-medium">
+                                            E-COMMERCE
+                                        </span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-400 font-mono">proofme.id • Packing Video Inspection</p>
+                                </div>
+                            </div>
+
+                            <a href="https://proofme.id" target="_blank" rel="noopener" class="p-2 rounded-xl liquid-pill text-slate-400 hover:text-white transition-all" title="Explore ProofMe">
+                                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+                            </a>
+                        </div>
+
+                        <p class="text-xs text-slate-400 font-normal leading-relaxed mb-4">
+                            ระบบบันทึกวิดีโอแพ็กสินค้าพร้อมสแกนบาร์โค้ดตรวจสอบอัตโนมัติ สำหรับร้านค้าออนไลน์ ยืนยันหลักฐานแม่นยำ.
+                        </p>
+
+                        <!-- Inspection HUD Simulation -->
+                        <div class="p-3.5 rounded-xl liquid-inner relative overflow-hidden">
+                            <div class="flex items-center justify-between text-[10px] font-mono mb-2">
+                                <span class="text-slate-300 font-semibold flex items-center gap-1.5">
+                                    <i data-lucide="scan" class="w-3.5 h-3.5 text-emerald-400"></i>
+                                    <span>Inspection HUD Simulation</span>
+                                </span>
+                                <span class="text-slate-500">AUDIT LIVE</span>
+                            </div>
+
+                            <div class="h-11 rounded-lg bg-slate-950/60 border border-white/5 relative overflow-hidden flex items-center justify-between px-3 font-mono text-[10px]">
+                                <div class="absolute left-0 right-0 h-px bg-emerald-400/80"></div>
+                                <div class="z-10 text-slate-300 flex items-center gap-2">
+                                    <i data-lucide="barcode" class="w-3.5 h-3.5 text-emerald-400"></i>
+                                    <span>TRACK: <strong class="text-slate-100">TH-BKK-889021</strong></span>
+                                </div>
+                                <span class="z-10 px-2 py-0.5 rounded-md liquid-inner text-emerald-400 font-semibold text-[9px]">
+                                    VERIFIED
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 02: SERVICES & WORKSHOPS -->
+                <section class="space-y-3 mb-8">
+                    <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                        <span class="font-mono text-[10px] font-semibold text-emerald-400 tracking-widest uppercase flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                            02 / SERVICES & TRAINING
+                        </span>
+                    </div>
+
+                    <div onclick="openBookingDrawer('Executive AI Training & Workshops')" class="liquid-card rounded-2xl p-4 cursor-pointer group flex items-start justify-between gap-3 text-slate-300 tilt-card">
+                        <div>
+                            <h3 class="font-display font-bold text-sm sm:text-base text-white group-hover:text-emerald-400 transition-colors mb-1">
+                                Executive AI Training & Corporate Workshops
+                            </h3>
+                            <p class="text-xs text-slate-400 font-normal leading-relaxed mb-2">
+                                หลักสูตร AI สำหรับผู้บริหารและองค์กรไทย: Applied LLMs, Multi-Agent Workflows, Custom GPTs & Enterprise Security.
+                            </p>
+                            <span class="inline-flex items-center gap-1.5 text-[10px] font-mono text-slate-500">
+                                <i data-lucide="users" class="w-3 h-3 text-emerald-400"></i>
+                                <span>60+ Corporate Teams Trained in Thailand</span>
+                            </span>
+                        </div>
+                        <div class="p-2 rounded-xl liquid-pill text-slate-400 shrink-0 group-hover:text-white transition-all">
+                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+
+                    <div onclick="openBookingDrawer('Custom AI Agent Solutions')" class="liquid-card rounded-2xl p-4 cursor-pointer group flex items-start justify-between gap-3 text-slate-300 tilt-card">
+                        <div>
+                            <h3 class="font-display font-bold text-sm sm:text-base text-white group-hover:text-emerald-400 transition-colors mb-1">
+                                AI Consulting & Custom System Solutions
+                            </h3>
+                            <p class="text-xs text-slate-400 font-normal leading-relaxed">
+                                ออกแบบโครงสร้างระบบ AI สำหรับธุรกิจ: Enterprise RAG, Thai Speech Models, Voice Bot & Autonomous Workflows.
+                            </p>
+                        </div>
+                        <div class="p-2 rounded-xl liquid-pill text-slate-400 shrink-0 group-hover:text-white transition-all">
+                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 03: RESEARCH & PUBLICATIONS -->
+                <section class="space-y-3 mb-8">
+                    <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                        <span class="font-mono text-[10px] font-semibold text-emerald-400 tracking-widest uppercase flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                            03 / RESEARCH
+                        </span>
+                    </div>
+
+                    <div class="liquid-card rounded-2xl p-4 space-y-3.5 tilt-card">
+                        <div class="border-b border-white/5 pb-3">
+                            <div class="flex items-center justify-between text-[10px] font-mono text-slate-500 mb-1">
+                                <span class="text-emerald-400 font-semibold">THAI SPEECH MODELING</span>
+                                <span>2025</span>
+                            </div>
+                            <h4 class="font-display font-bold text-xs sm:text-sm text-white">
+                                Tonal Precision Tuning in Synthetic Thai Acoustic Models
+                            </h4>
+                            <p class="text-[11px] text-slate-400 font-normal mt-1">
+                                การปรับแต่งระนาบวรรณยุกต์ภาษาไทยในโมเดลสังเคราะห์เสียงความหน่วงต่ำเพื่อความเป็นธรรมชาติสูงสุด.
+                            </p>
+                        </div>
+
+                        <div>
+                            <div class="flex items-center justify-between text-[10px] font-mono text-slate-500 mb-1">
+                                <span class="text-emerald-400 font-semibold">AGENT EVALUATION</span>
+                                <span>2024</span>
+                            </div>
+                            <h4 class="font-display font-bold text-xs sm:text-sm text-white">
+                                Hallucination Mitigation in Thai Enterprise RAG Pipelines
+                            </h4>
+                            <p class="text-[11px] text-slate-400 font-normal mt-1">
+                                เทคนิคการลดปัญหาข้อมูลคลาดเคลื่อนของ LLMs ในบริบทเอกสารและภาษาไทย.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 04: CONNECT & SOCIAL LINKS -->
+                <section class="space-y-3 mb-6">
+                    <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                        <span class="font-mono text-[10px] font-semibold text-emerald-400 tracking-widest uppercase flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                            04 / CONNECT
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2.5">
+                        <a href="https://github.com" target="_blank" rel="noopener" class="liquid-card p-3 rounded-xl flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-white transition-all active:scale-95 tilt-card">
+                            <i data-lucide="github" class="w-4 h-4 text-slate-300"></i>
+                            <span class="text-xs font-display font-semibold">GitHub</span>
+                        </a>
+
+                        <a href="https://linkedin.com" target="_blank" rel="noopener" class="liquid-card p-3 rounded-xl flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-white transition-all active:scale-95 tilt-card">
+                            <i data-lucide="linkedin" class="w-4 h-4 text-slate-300"></i>
+                            <span class="text-xs font-display font-semibold">LinkedIn</span>
+                        </a>
+
+                        <a href="mailto:contact@nounxlab.com" class="liquid-card p-3 rounded-xl flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-white transition-all active:scale-95 tilt-card">
+                            <i data-lucide="mail" class="w-4 h-4 text-slate-300"></i>
+                            <span class="text-xs font-display font-semibold">Email</span>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- FOOTER -->
+                <footer class="pt-5 border-t border-white/5 text-center text-slate-500">
+                    <div class="flex items-center justify-center gap-2 font-mono text-[11px] text-slate-400 mb-1">
+                        <span>© 2026 NounX Lab</span>
+                        <span>•</span>
+                        <span>Thanabodee AI Hub</span>
+                    </div>
+                    <p class="text-[10px] text-slate-600 font-mono">
+                        Designed for Enterprise AI Speech, Autonomous Agents & Executive Workshops.
+                    </p>
+                </footer>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- BOOKING / CONTACT DRAWER -->
+    <div id="booking-drawer" class="fixed inset-0 z-50 pointer-events-none opacity-0 transition-opacity duration-300 flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div onclick="closeBookingDrawer()" class="absolute inset-0 bg-black/70 backdrop-blur-md"></div>
+        
+        <div class="relative w-full max-w-lg liquid-panel bg-slate-900/95 text-slate-100 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl z-10 transition-transform duration-300 translate-y-full sm:translate-y-0 max-h-[90vh] overflow-y-auto border border-white/10">
+            <div class="flex items-center justify-between mb-4 border-b border-white/10 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl liquid-inner text-emerald-400 flex items-center justify-center">
+                        <i data-lucide="calendar" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-display font-bold text-base text-white">Work with Thanabodee</h3>
+                        <p class="text-[10px] text-slate-400 font-mono">จองเวิร์กชอป / ปรึกษาโปรเจกต์ AI</p>
+                    </div>
+                </div>
+                <button onclick="closeBookingDrawer()" class="p-1.5 rounded-full liquid-pill text-slate-400 hover:text-white transition-colors">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleContactSubmit(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-[10px] font-mono text-slate-300 font-bold mb-1">ORGANIZATION / NAME (ชื่อองค์กร / บริษัท)</label>
+                    <input type="text" name="organization" required placeholder="e.g. Enterprise Corp Thailand" class="w-full bg-slate-950/80 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-white/30">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-mono text-slate-300 font-bold mb-1">EMAIL ADDRESS (อีเมลติดต่อ)</label>
+                    <input type="email" name="email" required placeholder="name@company.co.th" class="w-full bg-slate-950/80 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-white/30">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-mono text-slate-300 font-bold mb-1">SERVICE TYPE (ประเภทบริการ)</label>
+                    <select id="booking-service-select" name="service" class="w-full bg-slate-950/80 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-white/30">
+                        <option value="Executive AI Training & Workshops">Executive AI Training / Corporate Workshop</option>
+                        <option value="Custom AI Agent Solutions">AI Consulting & Multi-Agent Structure</option>
+                        <option value="Voice Two Enterprise Integration">Voice Two Enterprise Integration</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-mono text-slate-300 font-bold mb-1">PROJECT DETAILS (รายละเอียดงาน)</label>
+                    <textarea name="details" rows="3" placeholder="ระบุเป้าหมาย จำนวนผู้ร่วมเวิร์กชอป หรือช่วงเวลา..." class="w-full bg-slate-950/80 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-white/30"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-3 rounded-xl bg-white/15 hover:bg-white/20 text-white font-display font-semibold text-xs uppercase tracking-wider transition-all shadow-md active:scale-98 border border-white/10">
+                    Send Inquiry / ส่งข้อมูลติดต่อ
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- SHARE MODAL -->
+    <div id="share-modal" class="fixed inset-0 z-50 pointer-events-none opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+        <div onclick="closeShareModal()" class="absolute inset-0 bg-black/70 backdrop-blur-md"></div>
+        <div class="relative w-full max-w-xs liquid-panel bg-slate-900/95 rounded-3xl p-5 text-center z-10 shadow-2xl border border-white/10">
+            <button onclick="closeShareModal()" class="absolute top-3 right-3 p-1 rounded-full liquid-pill text-slate-400 hover:text-white">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+            
+            <div class="w-10 h-10 rounded-xl liquid-inner text-emerald-400 flex items-center justify-center mx-auto mb-2">
+                <i data-lucide="qr-code" class="w-5 h-5"></i>
+            </div>
+            
+            <h3 class="font-display font-bold text-base text-white mb-1">Share Hub</h3>
+            <p class="text-xs text-slate-400 mb-3">คัดลอกลิงก์หรือสแกนเพื่อแชร์</p>
+
+            <button onclick="copyProfileLink()" class="w-full py-2.5 rounded-xl bg-white/15 hover:bg-white/20 text-white font-display font-semibold text-xs flex items-center justify-center gap-2 transition-all shadow-sm border border-white/10">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span id="copy-text">Copy Hub Link</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900/90 backdrop-blur-lg border border-white/15 text-white px-4 py-2.5 rounded-xl text-xs font-display font-semibold shadow-2xl opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-2">
+        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+        <span id="toast-text">Message sent!</span>
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // ==========================================
+        // 1. REFINED 3D TILT (Reduced 40% -> Max ±2.4deg)
+        // ==========================================
+        function initCardTiltInteraction() {
+            const cards = document.querySelectorAll('.tilt-card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    card.style.setProperty('--mouse-x', `${(x / rect.width) * 100}%`);
+                    card.style.setProperty('--mouse-y', `${(y / rect.height) * 100}%`);
+
+                    // 40% Reduced Angular Tilt (Max ±2.4 degrees)
+                    const rotateY = ((x / rect.width) - 0.5) * 2.4;
+                    const rotateX = ((y / rect.height) - 0.5) * -2.4;
+
+                    card.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.004, 1.004, 1.004)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+                });
+            });
+        }
+        initCardTiltInteraction();
+
+        // ==========================================
+        // 2. REALTIME CAMERA WITH REAR DEFAULT & LAST FRAME FREEZE
+        // ==========================================
+        let videoStream = null;
+        let isCameraActive = false;
+        let currentFacingMode = 'environment'; // Default: Rear / Back Camera (กล้องหลัง)
+
+        async function initCamera() {
+            const video = document.getElementById('webcam-video');
+            const freezeCanvas = document.getElementById('freeze-canvas');
+            const statusLabel = document.getElementById('cam-status-label');
+            const indicator = document.getElementById('cam-indicator');
+            const flipBtn = document.getElementById('cam-flip-btn');
+
+            try {
+                // Try environment (rear camera) first, then fallback
+                videoStream = await navigator.mediaDevices.getUserMedia({
+                    video: { 
+                        facingMode: { ideal: currentFacingMode },
+                        width: { ideal: 1920 }, 
+                        height: { ideal: 1080 } 
+                    },
+                    audio: false
+                });
+
+                if (video) {
+                    video.srcObject = videoStream;
+                    isCameraActive = true;
+                    video.style.opacity = '0.92';
+                    if (freezeCanvas) freezeCanvas.style.opacity = '0';
+                    if (statusLabel) statusLabel.textContent = 'CAM: LIVE';
+                    if (indicator) indicator.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse';
+                    if (flipBtn) flipBtn.classList.remove('hidden');
+                    document.getElementById('ambient-canvas').style.opacity = '0';
+                    showToast("Camera Active (" + (currentFacingMode === 'environment' ? "Rear" : "Front") + ")");
+                }
+            } catch (err) {
+                // Fallback attempt without facing constraint
+                try {
+                    videoStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                    if (video) {
+                        video.srcObject = videoStream;
+                        isCameraActive = true;
+                        video.style.opacity = '0.92';
+                        if (freezeCanvas) freezeCanvas.style.opacity = '0';
+                        if (statusLabel) statusLabel.textContent = 'CAM: LIVE';
+                        if (indicator) indicator.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse';
+                        document.getElementById('ambient-canvas').style.opacity = '0';
+                    }
+                } catch(e) {
+                    isCameraActive = false;
+                    if (statusLabel) statusLabel.textContent = 'CAM: OFF';
+                    if (indicator) indicator.className = 'w-1.5 h-1.5 rounded-full bg-slate-500';
+                    document.getElementById('ambient-canvas').style.opacity = '0.5';
+                    initAmbientCanvas();
+                }
+            }
+        }
+
+        function freezeCurrentFrame() {
+            const video = document.getElementById('webcam-video');
+            const freezeCanvas = document.getElementById('freeze-canvas');
+            if (video && freezeCanvas && video.videoWidth && video.videoHeight) {
+                freezeCanvas.width = video.videoWidth;
+                freezeCanvas.height = video.videoHeight;
+                const ctx = freezeCanvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, freezeCanvas.width, freezeCanvas.height);
+                freezeCanvas.style.opacity = '0.92';
+            }
+        }
+
+        function toggleCamera() {
+            const video = document.getElementById('webcam-video');
+            const flipBtn = document.getElementById('cam-flip-btn');
+
+            if (isCameraActive && videoStream) {
+                // 1. Capture the exact last frame before stopping
+                freezeCurrentFrame();
+
+                // 2. Stop camera stream tracks
+                videoStream.getTracks().forEach(track => track.stop());
+                videoStream = null;
+                isCameraActive = false;
+
+                if (video) {
+                    video.style.opacity = '0';
+                    video.srcObject = null;
+                }
+
+                document.getElementById('cam-status-label').textContent = 'CAM: OFF';
+                document.getElementById('cam-indicator').className = 'w-1.5 h-1.5 rounded-full bg-slate-500';
+                if (flipBtn) flipBtn.classList.add('hidden');
+                showToast("Camera disabled (Last frame frozen)");
+            } else {
+                initCamera();
+            }
+        }
+
+        async function flipCameraFacing() {
+            if (!isCameraActive) return;
+            currentFacingMode = (currentFacingMode === 'environment') ? 'user' : 'environment';
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+            }
+            await initCamera();
+        }
+
+        function setBlurLevel(level) {
+            const video = document.getElementById('webcam-video');
+            const freezeCanvas = document.getElementById('freeze-canvas');
+            const btnNone = document.getElementById('blur-none');
+            const btnSoft = document.getElementById('blur-soft');
+            const btnMed = document.getElementById('blur-medium');
+            const btnHeavy = document.getElementById('blur-heavy');
+
+            [btnNone, btnSoft, btnMed, btnHeavy].forEach(b => {
+                if (b) b.className = "px-2.5 py-1 rounded-full text-slate-400 hover:text-white transition-colors";
+            });
+
+            const baseClass = "absolute inset-0 w-full h-full object-cover scale-105 transition-all duration-700 ";
+            let blurClass = "camera-blur-soft";
+
+            if (level === 'none') {
+                blurClass = "camera-blur-none";
+                if (btnNone) btnNone.className = "px-2.5 py-1 rounded-full bg-slate-800 text-white font-semibold transition-colors border border-white/10";
+            } else if (level === 'soft') {
+                blurClass = "camera-blur-soft";
+                if (btnSoft) btnSoft.className = "px-2.5 py-1 rounded-full bg-slate-800 text-white font-semibold transition-colors border border-white/10";
+            } else if (level === 'medium') {
+                blurClass = "camera-blur-medium";
+                if (btnMed) btnMed.className = "px-2.5 py-1 rounded-full bg-slate-800 text-white font-semibold transition-colors border border-white/10";
+            } else {
+                blurClass = "camera-blur-heavy";
+                if (btnHeavy) btnHeavy.className = "px-2.5 py-1 rounded-full bg-slate-800 text-white font-semibold transition-colors border border-white/10";
+            }
+
+            if (video) video.className = baseClass + (isCameraActive ? 'opacity-90 ' : 'opacity-0 ') + blurClass;
+            if (freezeCanvas) freezeCanvas.className = baseClass + (freezeCanvas.style.opacity === '0' ? 'opacity-0 ' : 'opacity-90 ') + blurClass;
+        }
+
+        // Quiet Neutral Ambient Particle Wave
+        function initAmbientCanvas() {
+            const canvas = document.getElementById('ambient-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            let step = 0;
+            function animate() {
+                step += 0.003;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const x1 = canvas.width * 0.4 + Math.sin(step) * 80;
+                const y1 = canvas.height * 0.3 + Math.cos(step * 0.7) * 70;
+                const grad1 = ctx.createRadialGradient(x1, y1, 10, x1, y1, 550);
+                grad1.addColorStop(0, 'rgba(16, 185, 129, 0.08)');
+                grad1.addColorStop(1, 'transparent');
+                ctx.fillStyle = grad1;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+        initAmbientCanvas();
+
+        // ==========================================
+        // 3. AUDIO SYNTHESIZER FOR VOICE TWO
+        // ==========================================
+        let isSynthesizing = false;
+        let audioContext = null;
+        let oscillator = null;
+        let animFrameId = null;
+        const canvas = document.getElementById('waveform-canvas');
+        const ctx = canvas ? canvas.getContext('2d') : null;
+
+        function resizeCanvas() {
+            if (!canvas) return;
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function drawWaveform() {
+            if (!ctx || !canvas) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const bars = 20;
+            const barWidth = canvas.width / bars;
+            const statusText = document.getElementById('synth-status-text');
+
+            if (isSynthesizing) {
+                if (statusText) statusText.style.display = 'none';
+                for (let i = 0; i < bars; i++) {
+                    const height = Math.random() * (canvas.height - 4) + 4;
+                    const x = i * barWidth;
+                    const y = (canvas.height - height) / 2;
+
+                    ctx.fillStyle = '#10B981';
+                    ctx.fillRect(x + 1, y, barWidth - 2, height);
+                }
+                animFrameId = requestAnimationFrame(drawWaveform);
+            } else {
+                if (statusText) statusText.style.display = 'flex';
+            }
+        }
+
+        function updateVoicePitch() {
+            if (isSynthesizing) toggleThaiAudioSynth();
+        }
+
+        function toggleThaiAudioSynth() {
+            const playIcon = document.getElementById('synth-icon-play');
+            const stopIcon = document.getElementById('synth-icon-stop');
+            const label = document.getElementById('synth-btn-label');
+            const preset = document.getElementById('voice-preset').value;
+
+            isSynthesizing = !isSynthesizing;
+
+            if (isSynthesizing) {
+                playIcon.classList.add('hidden');
+                stopIcon.classList.remove('hidden');
+                label.textContent = "STOP";
+                drawWaveform();
+
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    oscillator = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+
+                    const freqMap = { 'thai-male': 220, 'thai-female': 440, 'narrator': 320 };
+
+                    oscillator.type = 'sine';
+                    oscillator.frequency.setValueAtTime(freqMap[preset] || 280, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime((freqMap[preset] || 280) * 1.3, audioContext.currentTime + 1.2);
+
+                    gain.gain.setValueAtTime(0.04, audioContext.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 1.4);
+
+                    oscillator.connect(gain);
+                    gain.connect(audioContext.destination);
+
+                    oscillator.start();
+                    oscillator.stop(audioContext.currentTime + 1.4);
+
+                    setTimeout(() => { if (isSynthesizing) toggleThaiAudioSynth(); }, 1600);
+                } catch(e) {}
+            } else {
+                playIcon.classList.remove('hidden');
+                stopIcon.classList.add('hidden');
+                label.textContent = "TEST VOICE";
+                if (animFrameId) cancelAnimationFrame(animFrameId);
+                if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawWaveform();
+            }
+        }
+
+        // ==========================================
+        // 4. DRAWER & MODAL CONTROLS
+        // ==========================================
+        function openBookingDrawer(selectedService = null) {
+            const drawer = document.getElementById('booking-drawer');
+            const select = document.getElementById('booking-service-select');
+            if (selectedService && select) {
+                select.value = selectedService;
+            }
+            drawer.classList.remove('pointer-events-none', 'opacity-0');
+            drawer.querySelector('.relative').classList.remove('translate-y-full');
+        }
+
+        function closeBookingDrawer() {
+            const drawer = document.getElementById('booking-drawer');
+            drawer.classList.add('pointer-events-none', 'opacity-0');
+            drawer.querySelector('.relative').classList.add('translate-y-full');
+        }
+
+        function openShareModal() {
+            document.getElementById('share-modal').classList.remove('pointer-events-none', 'opacity-0');
+        }
+
+        function closeShareModal() {
+            document.getElementById('share-modal').classList.add('pointer-events-none', 'opacity-0');
+        }
+
+        function copyProfileLink() {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    showToast("Hub Link copied!");
+                    closeShareModal();
+                }).catch(() => fallbackCopy());
+            } else {
+                fallbackCopy();
+            }
+        }
+
+        function fallbackCopy() {
+            const dummy = document.createElement('input');
+            document.body.appendChild(dummy);
+            dummy.value = window.location.href;
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+            showToast("Hub Link copied!");
+            closeShareModal();
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toast-text');
+            toastText.textContent = msg;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 2200);
+        }
+
+        async function handleContactSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+            } catch (err) {}
+
+            closeBookingDrawer();
+            showToast("ส่งข้อมูลเรียบร้อยแล้ว!");
+            form.reset();
+        }
+    </script>
+</body>
+</html>
