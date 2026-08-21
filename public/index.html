@@ -31,8 +31,6 @@
                         premium: {
                             accent: '#10B981',
                             dark: '#080B10',
-                            card: 'rgba(255, 255, 255, 0.03)',
-                            cardBorder: 'rgba(255, 255, 255, 0.07)',
                         }
                     }
                 }
@@ -42,26 +40,50 @@
 
     <style>
         /* ============================================================
-           PREMIUM HIGH-PRECISION LIQUID GLASS (Minimalist / Refined)
+           DISPERSION LIQUID GLASS SYSTEM (SVG Refraction & Chromatic Aberration)
            ============================================================ */
 
-        /* --- PURE DARK LIQUID GLASS --- */
-        .liquid-panel {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.015) 100%);
-            backdrop-filter: blur(24px) saturate(160%);
-            -webkit-backdrop-filter: blur(24px) saturate(160%);
-            border: 1px solid rgba(255, 255, 255, 0.09);
-            box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.7),
-                        inset 0 1px 0 0 rgba(255, 255, 255, 0.16);
+        :root, :host { 
+            --glass-frost: 0.04;
+            --glass-saturation: 1.35;
+            --glass-blur: 16px;
+            --filter-id: url(#glass-filter-_r_b_);
         }
 
+        /* SVG Filter Container */
+        .glass-surface__filter {
+            pointer-events: none;
+            opacity: 0;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            inset: 0;
+        }
+
+        /* Liquid Glass Main Panel */
+        .liquid-panel {
+            background: hsl(0 0% 0% / var(--glass-frost, 0.04));
+            -webkit-backdrop-filter: var(--filter-id) saturate(var(--glass-saturation, 1.35)) blur(var(--glass-blur, 16px));
+            backdrop-filter: var(--filter-id) saturate(var(--glass-saturation, 1.35)) blur(var(--glass-blur, 16px));
+            box-shadow: inset 0 0 2px 1px #ffffff59, 
+                        inset 0 0 10px 4px #ffffff26, 
+                        inset 0 4px 16px rgba(17, 17, 26, 0.25), 
+                        inset 0 8px 24px rgba(17, 17, 26, 0.25), 
+                        0 24px 48px -12px rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        /* Liquid Glass Cards */
         .liquid-card {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
-            backdrop-filter: blur(20px) saturate(150%);
-            -webkit-backdrop-filter: blur(20px) saturate(150%);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4),
-                        inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+            background: hsl(0 0% 0% / var(--glass-frost, 0.035));
+            -webkit-backdrop-filter: var(--filter-id) saturate(var(--glass-saturation, 1.35)) blur(var(--glass-blur, 14px));
+            backdrop-filter: var(--filter-id) saturate(var(--glass-saturation, 1.35)) blur(var(--glass-blur, 14px));
+            box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.3), 
+                        inset 0 0 8px 2px rgba(255, 255, 255, 0.12), 
+                        inset 0 4px 16px rgba(0, 0, 0, 0.35), 
+                        0 4px 20px -2px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.09);
             position: relative;
             transform-style: preserve-3d;
             will-change: transform;
@@ -71,13 +93,13 @@
                         background 0.2s ease;
         }
 
-        /* Subtle Neutral Specular Spotlight on Hover */
+        /* Subtle Specular Spotlight on Cursor */
         .liquid-card::before {
             content: '';
             position: absolute;
             inset: 0;
             border-radius: inherit;
-            background: radial-gradient(380px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.06), transparent 70%);
+            background: radial-gradient(380px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.07), transparent 70%);
             opacity: 0;
             transition: opacity 0.25s ease;
             pointer-events: none;
@@ -89,39 +111,40 @@
         }
 
         .liquid-card:hover {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
-            border-color: rgba(255, 255, 255, 0.18);
-            box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.6),
-                        inset 0 1px 0 0 rgba(255, 255, 255, 0.24);
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.45), 
+                        inset 0 0 12px 4px rgba(255, 255, 255, 0.18), 
+                        0 16px 36px -8px rgba(0, 0, 0, 0.6);
         }
 
+        /* Sub-layer Insets */
         .liquid-inner {
             background: rgba(255, 255, 255, 0.025);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
         }
 
+        /* Action Pills */
         .liquid-pill {
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.09);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3),
-                        inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+            background: hsl(0 0% 0% / 0.15);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.2), 
+                        0 2px 8px rgba(0, 0, 0, 0.3);
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .liquid-pill:hover {
             background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.25);
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4),
-                        inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+            box-shadow: inset 0 0 3px 1px rgba(255, 255, 255, 0.35), 0 4px 12px rgba(0, 0, 0, 0.4);
         }
 
-        /* Subtle Precision Background Orbs */
+        /* Subtle Ambient Glow */
         @keyframes ambient-drift-1 {
             0%, 100% { transform: translate(0px, 0px); }
             50% { transform: translate(25px, 20px); }
@@ -134,12 +157,6 @@
         .animate-drift-1 { animation: ambient-drift-1 16s ease-in-out infinite; }
         .animate-drift-2 { animation: ambient-drift-2 20s ease-in-out infinite; }
 
-        /* Camera Blur Options */
-        .camera-blur-none { filter: blur(0px) brightness(1.0) contrast(1.0); }
-        .camera-blur-soft { filter: blur(6px) brightness(1.02) contrast(1.02); }
-        .camera-blur-medium { filter: blur(14px) brightness(1.0) contrast(1.04); }
-        .camera-blur-heavy { filter: blur(24px) brightness(0.98) contrast(1.06); }
-
         /* Modern Scrollbar */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -151,24 +168,44 @@
 <body class="bg-[#080B10] text-slate-200 font-body min-h-screen relative overflow-x-hidden selection:bg-slate-700 selection:text-white transition-colors duration-300">
 
     <!-- ========================================================= -->
-    <!-- REALTIME CAMERA, FREEZE FRAME & QUIET AMBIENT BACKGROUND  -->
+    <!-- SVG CHROMATIC ABERRATION DISPERSION FILTER                -->
+    <!-- ========================================================= -->
+    <svg class="glass-surface__filter" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+            <filter id="glass-filter-_r_b_" color-interpolation-filters="sRGB" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.015 0.015" numOctaves="2" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" id="redchannel" result="dispRed" scale="-14" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+                <feColorMatrix in="dispRed" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="red"></feColorMatrix>
+                <feDisplacementMap in="SourceGraphic" in2="noise" id="greenchannel" result="dispGreen" scale="-18" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+                <feColorMatrix in="dispGreen" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="green"></feColorMatrix>
+                <feDisplacementMap in="SourceGraphic" in2="noise" id="bluechannel" result="dispBlue" scale="-22" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+                <feColorMatrix in="dispBlue" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="blue"></feColorMatrix>
+                <feBlend in="red" in2="green" mode="screen" result="rg"></feBlend>
+                <feBlend in="rg" in2="blue" mode="screen" result="output"></feBlend>
+                <feGaussianBlur in="output" stdDeviation="1.2"></feGaussianBlur>
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- ========================================================= -->
+    <!-- REALTIME CAMERA & BACKGROUND (CAMERA IS 100% SHARP)       -->
     <!-- ========================================================= -->
     <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-        <!-- Live Video Stream -->
-        <video id="webcam-video" autoplay playsinline muted class="absolute inset-0 w-full h-full object-cover scale-105 opacity-0 transition-all duration-700 camera-blur-soft"></video>
+        <!-- Live Video Stream (Sharp / No Blur on Video Element) -->
+        <video id="webcam-video" autoplay playsinline muted class="absolute inset-0 w-full h-full object-cover scale-105 opacity-0 transition-opacity duration-700"></video>
 
-        <!-- Frozen Last Frame Canvas -->
-        <canvas id="freeze-canvas" class="absolute inset-0 w-full h-full object-cover scale-105 opacity-0 transition-opacity duration-700 camera-blur-soft"></canvas>
+        <!-- Frozen Last Frame Canvas (Sharp / No Blur on Canvas Element) -->
+        <canvas id="freeze-canvas" class="absolute inset-0 w-full h-full object-cover scale-105 opacity-0 transition-opacity duration-700"></canvas>
 
-        <!-- Neutral Ambient Canvas -->
-        <canvas id="ambient-canvas" class="absolute inset-0 w-full h-full opacity-50 transition-opacity duration-700"></canvas>
+        <!-- Neutral Ambient Canvas (Fallback when camera is disabled and not yet initialized) -->
+        <canvas id="ambient-canvas" class="absolute inset-0 w-full h-full opacity-40 transition-opacity duration-700"></canvas>
 
-        <!-- Deep Ambient Gradients -->
+        <!-- Subtle Ambient Background Accents -->
         <div class="absolute -top-32 -left-20 w-[32rem] h-[32rem] rounded-full bg-emerald-950/20 blur-[120px] animate-drift-1 pointer-events-none"></div>
         <div class="absolute top-1/2 -right-32 w-[34rem] h-[34rem] rounded-full bg-slate-900/40 blur-[140px] animate-drift-2 pointer-events-none"></div>
 
         <!-- Balanced Surface Tint -->
-        <div class="absolute inset-0 bg-gradient-to-b from-[#080B10]/45 via-[#080B10]/20 to-[#080B10]/55 backdrop-blur-[1px]"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-[#080B10]/40 via-[#080B10]/15 to-[#080B10]/50 backdrop-blur-[0px]"></div>
         <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px); background-size: 24px 24px;"></div>
     </div>
 
@@ -180,17 +217,17 @@
         </button>
 
         <!-- Camera Toggle Pill -->
-        <button onclick="toggleCamera()" id="cam-toggle-btn" class="px-3.5 py-1.5 rounded-full liquid-pill text-[11px] font-mono font-medium flex items-center gap-2 hover:border-white/20 active:scale-95 text-slate-300">
+        <button onclick="toggleCamera()" id="cam-toggle-btn" class="px-3.5 py-1.5 rounded-full liquid-pill text-[11px] font-mono font-medium flex items-center gap-2 hover:border-white/25 active:scale-95 text-slate-300">
             <span class="w-1.5 h-1.5 rounded-full bg-slate-500" id="cam-indicator"></span>
             <span id="cam-status-label">CAM: OFF</span>
         </button>
 
-        <!-- Camera Blur Level Selector -->
+        <!-- Glass Refraction Intensity Selector -->
         <div class="hidden sm:flex items-center p-0.5 rounded-full liquid-pill text-[10px] font-mono">
-            <button onclick="setBlurLevel('none')" id="blur-none" class="px-2.5 py-1 rounded-full text-slate-400 hover:text-white transition-colors">CLEAR</button>
-            <button onclick="setBlurLevel('soft')" id="blur-soft" class="px-2.5 py-1 rounded-full bg-slate-800 text-white font-semibold transition-colors border border-white/10">SOFT</button>
-            <button onclick="setBlurLevel('medium')" id="blur-medium" class="px-2.5 py-1 rounded-full text-slate-400 hover:text-white transition-colors">MED</button>
-            <button onclick="setBlurLevel('heavy')" id="blur-heavy" class="px-2.5 py-1 rounded-full text-slate-400 hover:text-white transition-colors">DEEP</button>
+            <button onclick="setGlassBlurLevel('none')" id="blur-none" class="px-2.5 py-1 rounded-full text-slate-400 hover:text-white transition-colors">CLEAR</button>
+            <button onclick="setGlassBlurLevel('soft')" id="blur-soft" class="px-2.5 py-1 rounded-full bg-slate-800 text-white font-semibold transition-colors border border-white/15">SOFT</button>
+            <button onclick="setGlassBlurLevel('medium')" id="blur-medium" class="px-2.5 py-1 rounded-full text-slate-400 hover:text-white transition-colors">MED</button>
+            <button onclick="setGlassBlurLevel('heavy')" id="blur-heavy" class="px-2.5 py-1 rounded-full text-slate-400 hover:text-white transition-colors">DEEP</button>
         </div>
 
         <!-- Share Button -->
@@ -208,7 +245,7 @@
             <!-- ========================================================= -->
             <section class="flex flex-col items-center text-center px-4 mb-8 sm:mb-10">
                 
-                <!-- Circular Avatar Frame with Refined Glass Ring -->
+                <!-- Circular Avatar Frame with Liquid Ring -->
                 <div class="relative mb-5 group">
                     <div class="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1.5 liquid-panel overflow-hidden flex items-center justify-center">
                         <div class="w-full h-full rounded-full bg-slate-900 shadow-inner overflow-hidden flex items-center justify-center border border-white/5">
@@ -268,7 +305,7 @@
             </section>
 
             <!-- ================================================================= -->
-            <!-- MAIN ULTRA-CLEAR LIQUID GLASS CONTAINER                           -->
+            <!-- MAIN LIQUID GLASS CONTAINER                                       -->
             <!-- ================================================================= -->
             <main class="liquid-panel rounded-t-[40px] sm:rounded-t-[52px] p-5 sm:p-7 relative overflow-hidden">
                 
@@ -586,7 +623,7 @@
             </div>
             
             <h3 class="font-display font-bold text-base text-white mb-1">Share Hub</h3>
-            <p class="text-xs text-slate-400 mb-3">คัดลอกลิงก์หรือสแกนเพื่อแชร์</p>
+            <p class="text-xs text-slate-400 mb-3">คัดลอกลิงก์เพื่อแชร์</p>
 
             <button onclick="copyProfileLink()" class="w-full py-2.5 rounded-xl bg-white/15 hover:bg-white/20 text-white font-display font-semibold text-xs flex items-center justify-center gap-2 transition-all shadow-sm border border-white/10">
                 <i data-lucide="copy" class="w-3.5 h-3.5"></i>
@@ -619,7 +656,6 @@
                     card.style.setProperty('--mouse-x', `${(x / rect.width) * 100}%`);
                     card.style.setProperty('--mouse-y', `${(y / rect.height) * 100}%`);
 
-                    // 40% Reduced Angular Tilt (Max ±2.4 degrees)
                     const rotateY = ((x / rect.width) - 0.5) * 2.4;
                     const rotateX = ((y / rect.height) - 0.5) * -2.4;
 
@@ -635,10 +671,11 @@
 
         // ==========================================
         // 2. REALTIME CAMERA WITH REAR DEFAULT & LAST FRAME FREEZE
+        // (CAMERA IS 100% SHARP; BLUR APPLIES ONLY ON GLASS SURFACES)
         // ==========================================
         let videoStream = null;
         let isCameraActive = false;
-        let currentFacingMode = 'environment'; // Default: Rear / Back Camera (กล้องหลัง)
+        let currentFacingMode = 'environment'; // Default: Rear / Back Camera
 
         async function initCamera() {
             const video = document.getElementById('webcam-video');
@@ -648,7 +685,6 @@
             const flipBtn = document.getElementById('cam-flip-btn');
 
             try {
-                // Try environment (rear camera) first, then fallback
                 videoStream = await navigator.mediaDevices.getUserMedia({
                     video: { 
                         facingMode: { ideal: currentFacingMode },
@@ -670,7 +706,6 @@
                     showToast("Camera Active (" + (currentFacingMode === 'environment' ? "Rear" : "Front") + ")");
                 }
             } catch (err) {
-                // Fallback attempt without facing constraint
                 try {
                     videoStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
                     if (video) {
@@ -686,7 +721,7 @@
                     isCameraActive = false;
                     if (statusLabel) statusLabel.textContent = 'CAM: OFF';
                     if (indicator) indicator.className = 'w-1.5 h-1.5 rounded-full bg-slate-500';
-                    document.getElementById('ambient-canvas').style.opacity = '0.5';
+                    document.getElementById('ambient-canvas').style.opacity = '0.4';
                     initAmbientCanvas();
                 }
             }
@@ -709,10 +744,7 @@
             const flipBtn = document.getElementById('cam-flip-btn');
 
             if (isCameraActive && videoStream) {
-                // 1. Capture the exact last frame before stopping
                 freezeCurrentFrame();
-
-                // 2. Stop camera stream tracks
                 videoStream.getTracks().forEach(track => track.stop());
                 videoStream = null;
                 isCameraActive = false;
@@ -725,7 +757,7 @@
                 document.getElementById('cam-status-label').textContent = 'CAM: OFF';
                 document.getElementById('cam-indicator').className = 'w-1.5 h-1.5 rounded-full bg-slate-500';
                 if (flipBtn) flipBtn.classList.add('hidden');
-                showToast("Camera disabled (Last frame frozen)");
+                showToast("Camera disabled (Last frame preserved)");
             } else {
                 initCamera();
             }
@@ -740,9 +772,7 @@
             await initCamera();
         }
 
-        function setBlurLevel(level) {
-            const video = document.getElementById('webcam-video');
-            const freezeCanvas = document.getElementById('freeze-canvas');
+        function setGlassBlurLevel(level) {
             const btnNone = document.getElementById('blur-none');
             const btnSoft = document.getElementById('blur-soft');
             const btnMed = document.getElementById('blur-medium');
@@ -752,28 +782,26 @@
                 if (b) b.className = "px-2.5 py-1 rounded-full text-slate-400 hover:text-white transition-colors";
             });
 
-            const baseClass = "absolute inset-0 w-full h-full object-cover scale-105 transition-all duration-700 ";
-            let blurClass = "camera-blur-soft";
-
             if (level === 'none') {
-                blurClass = "camera-blur-none";
-                if (btnNone) btnNone.className = "px-2.5 py-1 rounded-full bg-slate-800 text-white font-semibold transition-colors border border-white/10";
+                document.documentElement.style.setProperty('--glass-blur', '0px');
+                document.documentElement.style.setProperty('--filter-id', 'none');
+                if (btnNone) btnNone.className = "px-2.5 py-1 rounded-full bg-slate-800 text-white font-semibold transition-colors border border-white/15";
             } else if (level === 'soft') {
-                blurClass = "camera-blur-soft";
-                if (btnSoft) btnSoft.className = "px-2.5 py-1 rounded-full bg-slate-800 text-white font-semibold transition-colors border border-white/10";
+                document.documentElement.style.setProperty('--glass-blur', '14px');
+                document.documentElement.style.setProperty('--filter-id', 'url(#glass-filter-_r_b_)');
+                if (btnSoft) btnSoft.className = "px-2.5 py-1 rounded-full bg-slate-800 text-white font-semibold transition-colors border border-white/15";
             } else if (level === 'medium') {
-                blurClass = "camera-blur-medium";
-                if (btnMed) btnMed.className = "px-2.5 py-1 rounded-full bg-slate-800 text-white font-semibold transition-colors border border-white/10";
+                document.documentElement.style.setProperty('--glass-blur', '24px');
+                document.documentElement.style.setProperty('--filter-id', 'url(#glass-filter-_r_b_)');
+                if (btnMed) btnMed.className = "px-2.5 py-1 rounded-full bg-slate-800 text-white font-semibold transition-colors border border-white/15";
             } else {
-                blurClass = "camera-blur-heavy";
-                if (btnHeavy) btnHeavy.className = "px-2.5 py-1 rounded-full bg-slate-800 text-white font-semibold transition-colors border border-white/10";
+                document.documentElement.style.setProperty('--glass-blur', '38px');
+                document.documentElement.style.setProperty('--filter-id', 'url(#glass-filter-_r_b_)');
+                if (btnHeavy) btnHeavy.className = "px-2.5 py-1 rounded-full bg-slate-800 text-white font-semibold transition-colors border border-white/15";
             }
-
-            if (video) video.className = baseClass + (isCameraActive ? 'opacity-90 ' : 'opacity-0 ') + blurClass;
-            if (freezeCanvas) freezeCanvas.className = baseClass + (freezeCanvas.style.opacity === '0' ? 'opacity-0 ' : 'opacity-90 ') + blurClass;
         }
 
-        // Quiet Neutral Ambient Particle Wave
+        // Neutral Ambient Canvas Animation
         function initAmbientCanvas() {
             const canvas = document.getElementById('ambient-canvas');
             if (!canvas) return;
