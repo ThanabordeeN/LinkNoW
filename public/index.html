@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thanabodee / NAV — Precision Liquid Glass Hub</title>
+    <title>Thanabodee / NAV — WebGL Liquid Glass Lens Hub</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,6 +15,9 @@
     
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <script>
         tailwind.config = {
@@ -40,48 +43,37 @@
 
     <style>
         /* ============================================================
-           DISPERSION LIQUID GLASS SYSTEM (SVG Refraction & Chromatic Aberration)
+           THREE.JS / WEBGL LIQUID GLASS STYLING
            ============================================================ */
 
-        :root, :host { 
-            --glass-frost: 0.04;
-            --glass-saturation: 1.35;
-            --glass-blur: 16px;
-            --filter-id: url(#glass-filter-_r_b_);
-        }
-
-        /* SVG Filter Container */
-        .glass-surface__filter {
-            pointer-events: none;
-            opacity: 0;
-            z-index: -1;
-            width: 100%;
-            height: 100%;
-            position: absolute;
+        /* WebGL Canvas */
+        #webgl-canvas {
+            position: fixed;
             inset: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
         }
 
-        /* Liquid Glass Main Panel */
+        /* Pure Dark Liquid Glass Overlays */
         .liquid-panel {
-            background: hsl(0 0% 0% / var(--glass-frost, 0.04));
-            -webkit-backdrop-filter: var(--filter-id) saturate(var(--glass-saturation, 1.35)) blur(var(--glass-blur, 16px));
-            backdrop-filter: var(--filter-id) saturate(var(--glass-saturation, 1.35)) blur(var(--glass-blur, 16px));
+            background: rgba(8, 11, 16, 0.45);
+            backdrop-filter: blur(24px) saturate(160%);
+            -webkit-backdrop-filter: blur(24px) saturate(160%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             box-shadow: inset 0 0 2px 1px #ffffff59, 
                         inset 0 0 10px 4px #ffffff26, 
                         inset 0 4px 16px rgba(17, 17, 26, 0.25), 
-                        inset 0 8px 24px rgba(17, 17, 26, 0.25), 
                         0 24px 48px -12px rgba(0, 0, 0, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
-        /* Liquid Glass Cards */
         .liquid-card {
-            background: hsl(0 0% 0% / var(--glass-frost, 0.035));
-            -webkit-backdrop-filter: var(--filter-id) saturate(var(--glass-saturation, 1.35)) blur(var(--glass-blur, 14px));
-            backdrop-filter: var(--filter-id) saturate(var(--glass-saturation, 1.35)) blur(var(--glass-blur, 14px));
-            box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.3), 
-                        inset 0 0 8px 2px rgba(255, 255, 255, 0.12), 
-                        inset 0 4px 16px rgba(0, 0, 0, 0.35), 
+            background: rgba(255, 255, 255, 0.035);
+            backdrop-filter: blur(16px) saturate(140%);
+            -webkit-backdrop-filter: blur(16px) saturate(140%);
+            box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.25), 
+                        inset 0 0 8px 2px rgba(255, 255, 255, 0.1), 
                         0 4px 20px -2px rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.09);
             position: relative;
@@ -93,7 +85,6 @@
                         background 0.2s ease;
         }
 
-        /* Subtle Specular Spotlight on Cursor */
         .liquid-card::before {
             content: '';
             position: absolute;
@@ -111,29 +102,25 @@
         }
 
         .liquid-card:hover {
-            border-color: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.22);
             box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.45), 
                         inset 0 0 12px 4px rgba(255, 255, 255, 0.18), 
                         0 16px 36px -8px rgba(0, 0, 0, 0.6);
         }
 
-        /* Sub-layer Insets */
         .liquid-inner {
             background: rgba(255, 255, 255, 0.025);
-            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
         }
 
-        /* Action Pills */
         .liquid-pill {
-            background: hsl(0 0% 0% / 0.15);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(0, 0, 0, 0.35);
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.2), 
-                        0 2px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.2), 0 2px 8px rgba(0, 0, 0, 0.3);
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -141,21 +128,7 @@
             background: rgba(255, 255, 255, 0.08);
             border-color: rgba(255, 255, 255, 0.25);
             transform: translateY(-1px);
-            box-shadow: inset 0 0 3px 1px rgba(255, 255, 255, 0.35), 0 4px 12px rgba(0, 0, 0, 0.4);
         }
-
-        /* Subtle Ambient Glow */
-        @keyframes ambient-drift-1 {
-            0%, 100% { transform: translate(0px, 0px); }
-            50% { transform: translate(25px, 20px); }
-        }
-        @keyframes ambient-drift-2 {
-            0%, 100% { transform: translate(0px, 0px); }
-            50% { transform: translate(-20px, -15px); }
-        }
-
-        .animate-drift-1 { animation: ambient-drift-1 16s ease-in-out infinite; }
-        .animate-drift-2 { animation: ambient-drift-2 20s ease-in-out infinite; }
 
         /* Modern Scrollbar */
         ::-webkit-scrollbar { width: 4px; }
@@ -168,46 +141,12 @@
 <body class="bg-[#080B10] text-slate-200 font-body min-h-screen relative overflow-x-hidden selection:bg-slate-700 selection:text-white transition-colors duration-300">
 
     <!-- ========================================================= -->
-    <!-- SVG CHROMATIC ABERRATION DISPERSION FILTER                -->
+    <!-- THREE.JS WEBGL GLSL LIQUID GLASS SHADER CANVAS            -->
     <!-- ========================================================= -->
-    <svg class="glass-surface__filter" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <defs>
-            <filter id="glass-filter-_r_b_" color-interpolation-filters="sRGB" x="-20%" y="-20%" width="140%" height="140%">
-                <feTurbulence type="fractalNoise" baseFrequency="0.015 0.015" numOctaves="2" result="noise" />
-                <feDisplacementMap in="SourceGraphic" in2="noise" id="redchannel" result="dispRed" scale="-14" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
-                <feColorMatrix in="dispRed" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="red"></feColorMatrix>
-                <feDisplacementMap in="SourceGraphic" in2="noise" id="greenchannel" result="dispGreen" scale="-18" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
-                <feColorMatrix in="dispGreen" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="green"></feColorMatrix>
-                <feDisplacementMap in="SourceGraphic" in2="noise" id="bluechannel" result="dispBlue" scale="-22" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
-                <feColorMatrix in="dispBlue" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="blue"></feColorMatrix>
-                <feBlend in="red" in2="green" mode="screen" result="rg"></feBlend>
-                <feBlend in="rg" in2="blue" mode="screen" result="output"></feBlend>
-                <feGaussianBlur in="output" stdDeviation="1.2"></feGaussianBlur>
-            </filter>
-        </defs>
-    </svg>
+    <canvas id="webgl-canvas"></canvas>
 
-    <!-- ========================================================= -->
-    <!-- REALTIME CAMERA & BACKGROUND (CAMERA IS 100% SHARP)       -->
-    <!-- ========================================================= -->
-    <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-        <!-- Live Video Stream (Sharp / No Blur on Video Element) -->
-        <video id="webcam-video" autoplay playsinline muted class="absolute inset-0 w-full h-full object-cover scale-105 opacity-0 transition-opacity duration-700"></video>
-
-        <!-- Frozen Last Frame Canvas (Sharp / No Blur on Canvas Element) -->
-        <canvas id="freeze-canvas" class="absolute inset-0 w-full h-full object-cover scale-105 opacity-0 transition-opacity duration-700"></canvas>
-
-        <!-- Neutral Ambient Canvas (Fallback when camera is disabled and not yet initialized) -->
-        <canvas id="ambient-canvas" class="absolute inset-0 w-full h-full opacity-40 transition-opacity duration-700"></canvas>
-
-        <!-- Subtle Ambient Background Accents -->
-        <div class="absolute -top-32 -left-20 w-[32rem] h-[32rem] rounded-full bg-emerald-950/20 blur-[120px] animate-drift-1 pointer-events-none"></div>
-        <div class="absolute top-1/2 -right-32 w-[34rem] h-[34rem] rounded-full bg-slate-900/40 blur-[140px] animate-drift-2 pointer-events-none"></div>
-
-        <!-- Balanced Surface Tint -->
-        <div class="absolute inset-0 bg-gradient-to-b from-[#080B10]/40 via-[#080B10]/15 to-[#080B10]/50 backdrop-blur-[0px]"></div>
-        <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px); background-size: 24px 24px;"></div>
-    </div>
+    <!-- Hidden Video Element for Realtime WebGL VideoTexture -->
+    <video id="webcam-video" autoplay playsinline muted class="hidden"></video>
 
     <!-- TOP FLOATING UTILITY CONTROLS -->
     <header class="fixed top-4 right-4 z-40 flex items-center gap-2">
@@ -221,14 +160,6 @@
             <span class="w-1.5 h-1.5 rounded-full bg-slate-500" id="cam-indicator"></span>
             <span id="cam-status-label">CAM: OFF</span>
         </button>
-
-        <!-- Glass Refraction Intensity Selector -->
-        <div class="hidden sm:flex items-center p-0.5 rounded-full liquid-pill text-[10px] font-mono">
-            <button onclick="setGlassBlurLevel('none')" id="blur-none" class="px-2.5 py-1 rounded-full text-slate-400 hover:text-white transition-colors">CLEAR</button>
-            <button onclick="setGlassBlurLevel('soft')" id="blur-soft" class="px-2.5 py-1 rounded-full bg-slate-800 text-white font-semibold transition-colors border border-white/15">SOFT</button>
-            <button onclick="setGlassBlurLevel('medium')" id="blur-medium" class="px-2.5 py-1 rounded-full text-slate-400 hover:text-white transition-colors">MED</button>
-            <button onclick="setGlassBlurLevel('heavy')" id="blur-heavy" class="px-2.5 py-1 rounded-full text-slate-400 hover:text-white transition-colors">DEEP</button>
-        </div>
 
         <!-- Share Button -->
         <button onclick="openShareModal()" class="p-2 rounded-full liquid-pill text-slate-400 hover:text-white active:scale-95" title="Share Hub">
@@ -550,7 +481,7 @@
                         <span>Thanabodee AI Hub</span>
                     </div>
                     <p class="text-[10px] text-slate-600 font-mono">
-                        Designed for Enterprise AI Speech, Autonomous Agents & Executive Workshops.
+                        Powered by WebGL GLSL Liquid Refraction & Three.js Shader Engine.
                     </p>
                 </footer>
 
@@ -638,12 +569,197 @@
         <span id="toast-text">Message sent!</span>
     </div>
 
+    <!-- ========================================================= -->
+    <!-- THREE.JS WEBGL GLSL LIQUID GLASS SHADER SCRIPT            -->
+    <!-- ========================================================= -->
     <script>
         // Initialize Lucide Icons
         lucide.createIcons();
 
         // ==========================================
-        // 1. REFINED 3D TILT (Reduced 40% -> Max ±2.4deg)
+        // 1. THREE.JS GLSL LIQUID GLASS ENGINE
+        // ==========================================
+        const defaultImageUrl = "https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?q=80&w=2000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+        
+        let renderer, scene, camera, material, mesh;
+        let defaultTexture, videoTexture;
+        let mouse = new THREE.Vector2(0, 0);
+        let targetMouse = new THREE.Vector2(0, 0);
+
+        const vertexShader = `
+            varying vec2 vUv;
+            void main() {
+                vUv = uv;
+                gl_Position = vec4(position, 1.0);
+            }
+        `;
+
+        const fragmentShader = `
+            varying vec2 vUv;
+            uniform vec2 uRes;
+            uniform vec2 uTexRes;
+            uniform vec2 uMouse;
+            uniform sampler2D uTexture;
+            
+            #define PI    3.14159265
+            #define S     smoothstep
+            #define R     uRes
+            #define PX(a) (a/R.y)
+            
+            vec2 CoverUV(vec2 u, vec2 s, vec2 i) {
+                float rs = s.x / s.y; // Aspect screen size
+                float ri = i.x / i.y; // Aspect image size
+                vec2 st = rs < ri ? vec2(i.x * s.y / i.y, s.y) : vec2(s.x, i.y * s.x / i.x);
+                vec2 o = (rs < ri ? vec2((st.x - s.x) / 2.0, 0.0) : vec2(0.0, (st.y - s.y) / 2.0)) / st;
+                return u * s / st + o;
+            }
+            
+            mat2 Rot (float a) {
+                return mat2(cos(a), sin(-a), sin(a), cos(a)); 
+            }
+
+            float Box (vec2 p, vec2 b) {
+                vec2 d = abs(p) - b;
+                return length(max(d, 0.)) + min(max(d.x, d.y), 0.);
+            }
+
+            float IconPhoto (vec2 uv) {
+                float c = 0.;
+                for (float i = 0.; i < 1.; i += 1./8.) {
+                    vec2 u = uv;
+                    u *= Rot(i * 2. * PI);
+                    u += vec2(0., PX(40.));
+                    float b = Box(u, vec2(PX(0.), PX(13.)));
+                    c += S(PX(1.5), 0., b - PX(15.)) * .2;
+                }
+                return c;
+            }
+
+            vec4 LiquidGlass (sampler2D tex, vec2 uv, float direction, float quality, float size) {
+                vec2 radius = size / R;
+                vec4 color = texture2D(tex, uv);
+
+                for (float d = 0.; d < PI; d += PI/direction) {
+                    for (float i = 1./quality; i <= 1.; i += 1./quality) {
+                        color += texture2D(tex, uv + vec2(cos(d), sin(d)) * radius * i);		
+                    }
+                }
+
+                color /= (quality * direction);
+                return color;
+            }
+
+            vec4 Icon (vec2 uv) {
+                float box = Box(uv, vec2(PX(55.)));
+                float boxShape = S(PX(2.0), 0., box - PX(55.));
+                float boxDisp = S(PX(35.), 0., box - PX(28.));
+                float boxLight = boxShape * S(0., PX(30.), box - PX(45.));
+                float icon = IconPhoto(uv);
+                return vec4(boxShape, boxDisp, boxLight, icon);
+            }
+
+            void main() {
+                vec2 uv = CoverUV(vUv, uRes, uTexRes);
+                vec2 st = (gl_FragCoord.xy - 0.5 * R) / R.y;
+                vec2 M  = uMouse * 0.5;
+                M.x *= uRes.x / uRes.y;
+                
+                vec3 tex = texture2D(uTexture, uv).rgb;
+                vec4 icon = Icon(st - M);
+            
+                vec2 uv2 = uv - M;
+                uv2 *= S(-0.6, 1.0, icon.y);
+                uv2 += M;
+
+                vec3 col = mix(tex * 0.85, 0.08 + LiquidGlass(uTexture, uv2, 10.0, 10.0, 22.0).rgb * 0.75, icon.x);
+                col += icon.z * 0.9 + icon.w;
+
+                gl_FragColor = vec4(col, 1.0);
+            }
+        `;
+
+        function initWebGLScene() {
+            const canvas = document.getElementById('webgl-canvas');
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            scene = new THREE.Scene();
+            camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+            const textureLoader = new THREE.TextureLoader();
+            defaultTexture = textureLoader.load(defaultImageUrl, (tex) => {
+                tex.minFilter = THREE.LinearFilter;
+                tex.magFilter = THREE.LinearFilter;
+                if (material) {
+                    material.uniforms.uTexRes.value.set(tex.image.width, tex.image.height);
+                }
+            });
+
+            const uniforms = {
+                uMouse: { value: new THREE.Vector2(0, 0) },
+                uRes: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+                uTexRes: { value: new THREE.Vector2(2000, 1333) },
+                uTexture: { value: defaultTexture }
+            };
+
+            material = new THREE.ShaderMaterial({
+                vertexShader: vertexShader,
+                fragmentShader: fragmentShader,
+                uniforms: uniforms
+            });
+
+            const geometry = new THREE.PlaneGeometry(2, 2);
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+
+            window.addEventListener('resize', onWindowResize);
+            window.addEventListener('mousemove', onMouseMove);
+            window.addEventListener('touchmove', onTouchMove, { passive: true });
+
+            animate();
+        }
+
+        function onWindowResize() {
+            if (!renderer || !material) return;
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            renderer.setSize(w, h);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            material.uniforms.uRes.value.set(w, h);
+        }
+
+        function onMouseMove(e) {
+            targetMouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            targetMouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        }
+
+        function onTouchMove(e) {
+            if (e.touches.length > 0) {
+                targetMouse.x = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
+                targetMouse.y = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Smooth Lerp Mouse Tracking
+            mouse.x += (targetMouse.x - mouse.x) * 0.08;
+            mouse.y += (targetMouse.y - mouse.y) * 0.08;
+
+            if (material) {
+                material.uniforms.uMouse.value.copy(mouse);
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // Initialize WebGL Scene
+        initWebGLScene();
+
+        // ==========================================
+        // 2. REFINED 3D CARD TILT INTERACTION
         // ==========================================
         function initCardTiltInteraction() {
             const cards = document.querySelectorAll('.tilt-card');
@@ -670,16 +786,14 @@
         initCardTiltInteraction();
 
         // ==========================================
-        // 2. REALTIME CAMERA WITH REAR DEFAULT & LAST FRAME FREEZE
-        // (CAMERA IS 100% SHARP; BLUR APPLIES ONLY ON GLASS SURFACES)
+        // 3. REALTIME CAMERA FEED INTO WEBGL TEXTURE
         // ==========================================
         let videoStream = null;
         let isCameraActive = false;
-        let currentFacingMode = 'environment'; // Default: Rear / Back Camera
+        let currentFacingMode = 'environment';
 
         async function initCamera() {
             const video = document.getElementById('webcam-video');
-            const freezeCanvas = document.getElementById('freeze-canvas');
             const statusLabel = document.getElementById('cam-status-label');
             const indicator = document.getElementById('cam-indicator');
             const flipBtn = document.getElementById('cam-flip-btn');
@@ -696,46 +810,29 @@
 
                 if (video) {
                     video.srcObject = videoStream;
+                    await video.play();
+
+                    videoTexture = new THREE.VideoTexture(video);
+                    videoTexture.minFilter = THREE.LinearFilter;
+                    videoTexture.magFilter = THREE.LinearFilter;
+                    videoTexture.format = THREE.RGBAFormat;
+
+                    if (material) {
+                        material.uniforms.uTexture.value = videoTexture;
+                        material.uniforms.uTexRes.value.set(video.videoWidth || 1280, video.videoHeight || 720);
+                    }
+
                     isCameraActive = true;
-                    video.style.opacity = '0.92';
-                    if (freezeCanvas) freezeCanvas.style.opacity = '0';
                     if (statusLabel) statusLabel.textContent = 'CAM: LIVE';
                     if (indicator) indicator.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse';
                     if (flipBtn) flipBtn.classList.remove('hidden');
-                    document.getElementById('ambient-canvas').style.opacity = '0';
-                    showToast("Camera Active (" + (currentFacingMode === 'environment' ? "Rear" : "Front") + ")");
+                    showToast("WebGL Camera Lens Active (" + (currentFacingMode === 'environment' ? "Rear" : "Front") + ")");
                 }
             } catch (err) {
-                try {
-                    videoStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-                    if (video) {
-                        video.srcObject = videoStream;
-                        isCameraActive = true;
-                        video.style.opacity = '0.92';
-                        if (freezeCanvas) freezeCanvas.style.opacity = '0';
-                        if (statusLabel) statusLabel.textContent = 'CAM: LIVE';
-                        if (indicator) indicator.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse';
-                        document.getElementById('ambient-canvas').style.opacity = '0';
-                    }
-                } catch(e) {
-                    isCameraActive = false;
-                    if (statusLabel) statusLabel.textContent = 'CAM: OFF';
-                    if (indicator) indicator.className = 'w-1.5 h-1.5 rounded-full bg-slate-500';
-                    document.getElementById('ambient-canvas').style.opacity = '0.4';
-                    initAmbientCanvas();
-                }
-            }
-        }
-
-        function freezeCurrentFrame() {
-            const video = document.getElementById('webcam-video');
-            const freezeCanvas = document.getElementById('freeze-canvas');
-            if (video && freezeCanvas && video.videoWidth && video.videoHeight) {
-                freezeCanvas.width = video.videoWidth;
-                freezeCanvas.height = video.videoHeight;
-                const ctx = freezeCanvas.getContext('2d');
-                ctx.drawImage(video, 0, 0, freezeCanvas.width, freezeCanvas.height);
-                freezeCanvas.style.opacity = '0.92';
+                isCameraActive = false;
+                if (statusLabel) statusLabel.textContent = 'CAM: OFF';
+                if (indicator) indicator.className = 'w-1.5 h-1.5 rounded-full bg-slate-500';
+                showToast("Camera unavailable");
             }
         }
 
@@ -744,20 +841,26 @@
             const flipBtn = document.getElementById('cam-flip-btn');
 
             if (isCameraActive && videoStream) {
-                freezeCurrentFrame();
                 videoStream.getTracks().forEach(track => track.stop());
                 videoStream = null;
                 isCameraActive = false;
 
                 if (video) {
-                    video.style.opacity = '0';
                     video.srcObject = null;
+                }
+
+                // Fallback to high-res liquid background texture
+                if (material && defaultTexture) {
+                    material.uniforms.uTexture.value = defaultTexture;
+                    if (defaultTexture.image) {
+                        material.uniforms.uTexRes.value.set(defaultTexture.image.width, defaultTexture.image.height);
+                    }
                 }
 
                 document.getElementById('cam-status-label').textContent = 'CAM: OFF';
                 document.getElementById('cam-indicator').className = 'w-1.5 h-1.5 rounded-full bg-slate-500';
                 if (flipBtn) flipBtn.classList.add('hidden');
-                showToast("Camera disabled (Last frame preserved)");
+                showToast("Camera disabled (Shader Active)");
             } else {
                 initCamera();
             }
@@ -772,69 +875,8 @@
             await initCamera();
         }
 
-        function setGlassBlurLevel(level) {
-            const btnNone = document.getElementById('blur-none');
-            const btnSoft = document.getElementById('blur-soft');
-            const btnMed = document.getElementById('blur-medium');
-            const btnHeavy = document.getElementById('blur-heavy');
-
-            [btnNone, btnSoft, btnMed, btnHeavy].forEach(b => {
-                if (b) b.className = "px-2.5 py-1 rounded-full text-slate-400 hover:text-white transition-colors";
-            });
-
-            if (level === 'none') {
-                document.documentElement.style.setProperty('--glass-blur', '0px');
-                document.documentElement.style.setProperty('--filter-id', 'none');
-                if (btnNone) btnNone.className = "px-2.5 py-1 rounded-full bg-slate-800 text-white font-semibold transition-colors border border-white/15";
-            } else if (level === 'soft') {
-                document.documentElement.style.setProperty('--glass-blur', '14px');
-                document.documentElement.style.setProperty('--filter-id', 'url(#glass-filter-_r_b_)');
-                if (btnSoft) btnSoft.className = "px-2.5 py-1 rounded-full bg-slate-800 text-white font-semibold transition-colors border border-white/15";
-            } else if (level === 'medium') {
-                document.documentElement.style.setProperty('--glass-blur', '24px');
-                document.documentElement.style.setProperty('--filter-id', 'url(#glass-filter-_r_b_)');
-                if (btnMed) btnMed.className = "px-2.5 py-1 rounded-full bg-slate-800 text-white font-semibold transition-colors border border-white/15";
-            } else {
-                document.documentElement.style.setProperty('--glass-blur', '38px');
-                document.documentElement.style.setProperty('--filter-id', 'url(#glass-filter-_r_b_)');
-                if (btnHeavy) btnHeavy.className = "px-2.5 py-1 rounded-full bg-slate-800 text-white font-semibold transition-colors border border-white/15";
-            }
-        }
-
-        // Neutral Ambient Canvas Animation
-        function initAmbientCanvas() {
-            const canvas = document.getElementById('ambient-canvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            
-            function resize() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-            resize();
-            window.addEventListener('resize', resize);
-
-            let step = 0;
-            function animate() {
-                step += 0.003;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                const x1 = canvas.width * 0.4 + Math.sin(step) * 80;
-                const y1 = canvas.height * 0.3 + Math.cos(step * 0.7) * 70;
-                const grad1 = ctx.createRadialGradient(x1, y1, 10, x1, y1, 550);
-                grad1.addColorStop(0, 'rgba(16, 185, 129, 0.08)');
-                grad1.addColorStop(1, 'transparent');
-                ctx.fillStyle = grad1;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                requestAnimationFrame(animate);
-            }
-            animate();
-        }
-        initAmbientCanvas();
-
         // ==========================================
-        // 3. AUDIO SYNTHESIZER FOR VOICE TWO
+        // 4. AUDIO SYNTHESIZER FOR VOICE TWO
         // ==========================================
         let isSynthesizing = false;
         let audioContext = null;
@@ -926,7 +968,7 @@
         }
 
         // ==========================================
-        // 4. DRAWER & MODAL CONTROLS
+        // 5. DRAWER & MODAL CONTROLS
         // ==========================================
         function openBookingDrawer(selectedService = null) {
             const drawer = document.getElementById('booking-drawer');
