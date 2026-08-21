@@ -650,7 +650,7 @@
         // 1. THREE.JS FULLSCREEN LIVE CAMERA PIPELINE
         // ==========================================
         let renderer, scene, camera, material, mesh;
-        let defaultTexture, videoTexture;
+        let fallbackTexture, videoTexture;
 
         const vertexShader = `
             varying vec2 vUv;
@@ -681,19 +681,6 @@
             }
         `;
 
-        function createDarkPlaceholderTexture() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 256;
-            canvas.height = 256;
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#080B10';
-            ctx.fillRect(0, 0, 256, 256);
-            const tex = new THREE.CanvasTexture(canvas);
-            tex.minFilter = THREE.LinearFilter;
-            tex.magFilter = THREE.LinearFilter;
-            return tex;
-        }
-
         function initWebGLScene() {
             const canvas = document.getElementById('webgl-canvas');
             renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false });
@@ -703,12 +690,22 @@
             scene = new THREE.Scene();
             camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
-            defaultTexture = createDarkPlaceholderTexture();
+            const textureLoader = new THREE.TextureLoader();
+            fallbackTexture = textureLoader.load('/images/fallback.jpg', (tex) => {
+                tex.minFilter = THREE.LinearFilter;
+                tex.magFilter = THREE.LinearFilter;
+                if (material && !isCameraActive) {
+                    material.uniforms.uTexture.value = tex;
+                    if (tex.image && tex.image.width && tex.image.height) {
+                        material.uniforms.uTexRes.value.set(tex.image.width, tex.image.height);
+                    }
+                }
+            });
 
             const uniforms = {
                 uRes: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
                 uTexRes: { value: new THREE.Vector2(1920, 1080) },
-                uTexture: { value: defaultTexture }
+                uTexture: { value: fallbackTexture }
             };
 
             material = new THREE.ShaderMaterial({
@@ -790,26 +787,14 @@
                 }
             } catch (err) {
                 isCameraActive = false;
+                if (material && fallbackTexture) {
+                    material.uniforms.uTexture.value = fallbackTexture;
+                    if (fallbackTexture.image) {
+                        material.uniforms.uTexRes.value.set(fallbackTexture.image.width || 1920, fallbackTexture.image.height || 1080);
+                    }
+                }
                 if (statusLabel) statusLabel.textContent = 'CAM: OFF';
                 if (indicator) indicator.className = 'w-1.5 h-1.5 rounded-full bg-slate-500';
-            }
-        }
-
-        function freezeCurrentFrame() {
-            const video = document.getElementById('webcam-video');
-            const freezeCanvas = document.getElementById('freeze-canvas');
-            if (video && freezeCanvas && video.videoWidth && video.videoHeight) {
-                freezeCanvas.width = video.videoWidth;
-                freezeCanvas.height = video.videoHeight;
-                const ctx = freezeCanvas.getContext('2d');
-                ctx.drawImage(video, 0, 0, freezeCanvas.width, freezeCanvas.height);
-                const frozenTexture = new THREE.CanvasTexture(freezeCanvas);
-                frozenTexture.minFilter = THREE.LinearFilter;
-                frozenTexture.magFilter = THREE.LinearFilter;
-                if (material) {
-                    material.uniforms.uTexture.value = frozenTexture;
-                    material.uniforms.uTexRes.value.set(freezeCanvas.width, freezeCanvas.height);
-                }
             }
         }
 
@@ -818,7 +803,6 @@
             const flipBtn = document.getElementById('cam-flip-btn');
 
             if (isCameraActive && videoStream) {
-                freezeCurrentFrame();
                 videoStream.getTracks().forEach(track => track.stop());
                 videoStream = null;
                 isCameraActive = false;
@@ -827,10 +811,17 @@
                     video.srcObject = null;
                 }
 
+                if (material && fallbackTexture) {
+                    material.uniforms.uTexture.value = fallbackTexture;
+                    if (fallbackTexture.image) {
+                        material.uniforms.uTexRes.value.set(fallbackTexture.image.width || 1920, fallbackTexture.image.height || 1080);
+                    }
+                }
+
                 document.getElementById('cam-status-label').textContent = 'CAM: OFF';
                 document.getElementById('cam-indicator').className = 'w-1.5 h-1.5 rounded-full bg-slate-500';
                 if (flipBtn) flipBtn.classList.add('hidden');
-                showToast("Camera disabled (Last frame preserved)");
+                showToast("Camera disabled (Fallback Wallpaper active)");
             } else {
                 initCamera();
             }
