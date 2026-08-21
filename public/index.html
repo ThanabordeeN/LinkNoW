@@ -43,16 +43,16 @@
 
     <style>
         /* ============================================================
-           EXACT LIQUID GLASS STYLE (Chromatic Dispersion + Inset Refraction)
+           EXACT GLSL LIQUID GLASS CARD SPECIFICATIONS
            ============================================================ */
 
         :root, :host { 
-            --glass-frost: 0.05;
+            --glass-frost: 0.1;
             --glass-saturation: 1.35;
             --filter-id: url(#glass-filter-_r_b_);
         }
 
-        /* Fullscreen WebGL Camera Canvas */
+        /* Fullscreen WebGL Live Camera Canvas */
         #webgl-canvas {
             position: fixed;
             inset: 0;
@@ -62,7 +62,7 @@
             pointer-events: none;
         }
 
-        /* SVG Dispersion Filter Container */
+        /* SVG Dispersion Filter */
         .glass-surface__filter {
             pointer-events: none;
             opacity: 0;
@@ -73,101 +73,115 @@
             inset: 0;
         }
 
-        /* Main Shell Liquid Panel */
+        /* Outer Main Container Liquid Shell */
         .liquid-panel {
-            background: hsl(0 0% 0% / var(--glass-frost, 0.05));
-            -webkit-backdrop-filter: var(--filter-id) saturate(var(--glass-saturation, 1.35)) blur(20px);
-            backdrop-filter: var(--filter-id) saturate(var(--glass-saturation, 1.35)) blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: hsl(0 0% 0% / 0.35);
+            -webkit-backdrop-filter: var(--filter-id) saturate(var(--glass-saturation)) blur(20px);
+            backdrop-filter: var(--filter-id) saturate(var(--glass-saturation)) blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.28);
             box-shadow: 
-                inset 0 0 2px 1px rgba(255, 255, 255, 0.35), 
-                inset 0 0 10px 4px rgba(255, 255, 255, 0.15), 
-                inset 0 4px 16px rgba(17, 17, 26, 0.2), 
-                inset 0 8px 24px rgba(17, 17, 26, 0.2), 
-                inset 0 6px 56px rgba(17, 17, 26, 0.2),
-                0 24px 48px -12px rgba(0, 0, 0, 0.7);
+                inset 0 0 0 1px rgba(255, 255, 255, 0.4),
+                inset 0 0 16px 3px rgba(255, 255, 255, 0.2),
+                inset 0 0 32px 8px rgba(255, 255, 255, 0.08),
+                inset 0 8px 32px rgba(0, 0, 0, 0.5),
+                0 24px 48px -12px rgba(0, 0, 0, 0.8);
+            position: relative;
         }
 
-        /* Exact Liquid Glass Cards (Static, No Float/Tilt) */
+        /* EXACT LIQUID GLASS CONTENT CARDS (Static Layout) */
         .liquid-card {
-            background: hsl(0 0% 0% / var(--glass-frost, 0.04));
-            -webkit-backdrop-filter: var(--filter-id) saturate(var(--glass-saturation, 1.35)) blur(16px);
-            backdrop-filter: var(--filter-id) saturate(var(--glass-saturation, 1.35)) blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.16);
+            background: hsl(0 0% 0% / 0.3);
+            -webkit-backdrop-filter: var(--filter-id) saturate(var(--glass-saturation)) blur(16px);
+            backdrop-filter: var(--filter-id) saturate(var(--glass-saturation)) blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.32);
             box-shadow: 
-                inset 0 0 2px 1px rgba(255, 255, 255, 0.35), 
-                inset 0 0 10px 4px rgba(255, 255, 255, 0.15), 
-                inset 0 4px 16px rgba(17, 17, 26, 0.15), 
-                inset 0 8px 24px rgba(17, 17, 26, 0.15), 
-                inset 0 6px 56px rgba(17, 17, 26, 0.15),
-                0 8px 24px -4px rgba(0, 0, 0, 0.5);
+                inset 0 0 0 1px rgba(255, 255, 255, 0.45),
+                inset 0 0 14px 2px rgba(255, 255, 255, 0.22),
+                inset 0 0 28px 6px rgba(255, 255, 255, 0.08),
+                inset 0 6px 20px rgba(0, 0, 0, 0.45),
+                0 10px 30px -4px rgba(0, 0, 0, 0.6);
+            border-radius: 22px;
             position: relative;
             overflow: hidden;
             transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
         }
 
-        /* Specular Top Rim Reflection Streak */
+        /* GLSL boxLight Specular Rim Highlight Gradient */
         .liquid-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 35%;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.0) 100%);
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(150deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.04) 35%, transparent 75%);
             pointer-events: none;
-            border-top-left-radius: inherit;
-            border-top-right-radius: inherit;
+            z-index: 1;
+        }
+
+        /* Razor-sharp Specular Top Edge Light */
+        .liquid-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 12%;
+            right: 12%;
+            height: 1.5px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent);
+            pointer-events: none;
+            z-index: 2;
         }
 
         .liquid-card:hover {
-            border-color: rgba(255, 255, 255, 0.28);
-            background: hsl(0 0% 0% / 0.07);
+            border-color: rgba(255, 255, 255, 0.48);
+            background: hsl(0 0% 0% / 0.38);
             box-shadow: 
-                inset 0 0 2px 1px rgba(255, 255, 255, 0.5), 
-                inset 0 0 14px 5px rgba(255, 255, 255, 0.2), 
-                inset 0 6px 24px rgba(17, 17, 26, 0.2), 
-                inset 0 8px 32px rgba(17, 17, 26, 0.2), 
-                0 16px 36px -6px rgba(0, 0, 0, 0.65);
+                inset 0 0 0 1.5px rgba(255, 255, 255, 0.6),
+                inset 0 0 18px 4px rgba(255, 255, 255, 0.28),
+                inset 0 0 36px 10px rgba(255, 255, 255, 0.12),
+                inset 0 8px 28px rgba(0, 0, 0, 0.5),
+                0 16px 36px -6px rgba(0, 0, 0, 0.75);
         }
 
-        /* Inset Inner Modules */
+        /* Inset Module Boxes (e.g. Synth studio / HUD) */
         .liquid-inner {
-            background: rgba(255, 255, 255, 0.025);
-            -webkit-backdrop-filter: blur(8px);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.35);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
             box-shadow: 
-                inset 0 0 2px 1px rgba(255, 255, 255, 0.18), 
-                inset 0 2px 8px rgba(0, 0, 0, 0.3);
+                inset 0 0 0 1px rgba(255, 255, 255, 0.2),
+                inset 0 0 10px 2px rgba(255, 255, 255, 0.08),
+                inset 0 2px 8px rgba(0, 0, 0, 0.4);
+            position: relative;
+            z-index: 5;
         }
 
-        /* Liquid Action Pills */
+        /* Liquid Action Pills & Badges */
         .liquid-pill {
-            background: hsl(0 0% 0% / 0.25);
-            -webkit-backdrop-filter: blur(12px);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.16);
+            background: hsl(0 0% 0% / 0.4);
+            -webkit-backdrop-filter: blur(14px);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.28);
             box-shadow: 
-                inset 0 0 2px 1px rgba(255, 255, 255, 0.28), 
-                inset 0 0 8px 2px rgba(255, 255, 255, 0.08), 
-                0 2px 8px rgba(0, 0, 0, 0.35);
+                inset 0 0 0 1px rgba(255, 255, 255, 0.35),
+                inset 0 0 8px 2px rgba(255, 255, 255, 0.12),
+                0 2px 8px rgba(0, 0, 0, 0.4);
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .liquid-pill:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.45);
             box-shadow: 
-                inset 0 0 3px 1px rgba(255, 255, 255, 0.4), 
-                0 4px 12px rgba(0, 0, 0, 0.45);
+                inset 0 0 0 1.5px rgba(255, 255, 255, 0.5),
+                inset 0 0 12px 3px rgba(255, 255, 255, 0.2),
+                0 4px 14px rgba(0, 0, 0, 0.5);
         }
 
         /* Modern Scrollbar */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 99px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 99px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.35); }
     </style>
 </head>
 
@@ -194,7 +208,7 @@
     </svg>
 
     <!-- ========================================================= -->
-    <!-- THREE.JS WEBGL LIVE CAMERA CANVAS                         -->
+    <!-- THREE.JS WEBGL FULLSCREEN LIVE CAMERA CANVAS              -->
     <!-- ========================================================= -->
     <canvas id="webgl-canvas"></canvas>
 
@@ -212,7 +226,7 @@
         </button>
 
         <!-- Camera Toggle Pill -->
-        <button onclick="toggleCamera()" id="cam-toggle-btn" class="px-3.5 py-1.5 rounded-full liquid-pill text-[11px] font-mono font-medium flex items-center gap-2 hover:border-white/25 active:scale-95 text-slate-300">
+        <button onclick="toggleCamera()" id="cam-toggle-btn" class="px-3.5 py-1.5 rounded-full liquid-pill text-[11px] font-mono font-medium flex items-center gap-2 hover:border-white/40 active:scale-95 text-slate-200">
             <span class="w-1.5 h-1.5 rounded-full bg-slate-500" id="cam-indicator"></span>
             <span id="cam-status-label">CAM: OFF</span>
         </button>
@@ -235,7 +249,7 @@
                 <!-- Circular Avatar Frame with Liquid Ring -->
                 <div class="relative mb-5 group">
                     <div class="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1.5 liquid-panel overflow-hidden flex items-center justify-center">
-                        <div class="w-full h-full rounded-full bg-slate-900 shadow-inner overflow-hidden flex items-center justify-center border border-white/5">
+                        <div class="w-full h-full rounded-full bg-slate-900 shadow-inner overflow-hidden flex items-center justify-center border border-white/10">
                             <svg class="w-full h-full pt-1.5" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="50" cy="50" r="48" fill="#111827"/>
                                 <circle cx="50" cy="40" r="30" fill="#10B981" opacity="0.15"/>
@@ -268,23 +282,23 @@
                         Master AI Builder & Corporate AI Trainer
                     </p>
 
-                    <p class="font-body text-xs sm:text-sm text-slate-400 font-normal leading-relaxed">
+                    <p class="font-body text-xs sm:text-sm text-slate-300 font-normal leading-relaxed">
                         AI Agents • Thai Voice AI • Applied Research
                     </p>
 
                     <div class="pt-1 flex items-center justify-center">
-                        <span class="liquid-pill text-slate-400 font-mono text-[10px] px-3.5 py-1 rounded-full flex items-center gap-2">
+                        <span class="liquid-pill text-slate-300 font-mono text-[10px] px-3.5 py-1 rounded-full flex items-center gap-2">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
                             <span>BANGKOK, THAILAND 🇹🇭</span>
-                            <span class="text-slate-600">•</span>
-                            <span class="text-slate-200 font-medium">NOUNX LAB</span>
+                            <span class="text-slate-500">•</span>
+                            <span class="text-slate-100 font-medium">NOUNX LAB</span>
                         </span>
                     </div>
                 </div>
 
                 <!-- Primary CTA Button -->
                 <div class="mt-6 w-full max-w-xs">
-                    <button onclick="openBookingDrawer()" class="w-full py-3.5 px-6 rounded-2xl bg-white/10 hover:bg-white/15 text-white font-display font-semibold text-xs tracking-wider uppercase flex items-center justify-center gap-2 transition-all shadow-lg active:scale-98 border border-white/15 backdrop-blur-md">
+                    <button onclick="openBookingDrawer()" class="w-full py-3.5 px-6 rounded-2xl bg-white/15 hover:bg-white/20 text-white font-display font-semibold text-xs tracking-wider uppercase flex items-center justify-center gap-2 transition-all shadow-lg active:scale-98 border border-white/25 backdrop-blur-md">
                         <i data-lucide="sparkles" class="w-4 h-4 text-emerald-400"></i>
                         <span>WORK WITH ME / WORKSHOP</span>
                     </button>
@@ -292,26 +306,26 @@
             </section>
 
             <!-- ================================================================= -->
-            <!-- MAIN LIQUID GLASS CONTAINER                                       -->
+            <!-- MAIN LIQUID GLASS CONTAINER (Static Layout)                       -->
             <!-- ================================================================= -->
             <main class="liquid-panel rounded-t-[40px] sm:rounded-t-[52px] p-5 sm:p-7 relative overflow-hidden">
                 
                 <!-- Micro Accent Line -->
-                <div class="w-10 h-0.5 bg-white/15 rounded-full mx-auto mb-6"></div>
+                <div class="w-10 h-0.5 bg-white/25 rounded-full mx-auto mb-6"></div>
 
                 <!-- SECTION 01: FEATURED PRODUCTS -->
                 <section class="space-y-4 mb-8">
-                    <div class="flex items-center justify-between border-b border-white/5 pb-2.5">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
                         <span class="font-mono text-[10px] font-semibold text-emerald-400 tracking-widest uppercase flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
                             01 / FEATURED PRODUCTS
                         </span>
-                        <span class="text-[10px] font-mono text-slate-500">NounX Lab</span>
+                        <span class="text-[10px] font-mono text-slate-400">NounX Lab</span>
                     </div>
 
                     <!-- PRODUCT 1: VOICE TWO -->
-                    <div class="liquid-card rounded-2xl p-4 sm:p-5 relative group">
-                        <div class="flex items-start justify-between gap-3 mb-3">
+                    <div class="liquid-card p-4 sm:p-5 relative group">
+                        <div class="flex items-start justify-between gap-3 mb-3 relative z-10">
                             <div class="flex items-center gap-3">
                                 <div class="w-9 h-9 rounded-xl liquid-inner flex items-center justify-center text-emerald-400">
                                     <i data-lucide="mic" class="w-4 h-4"></i>
@@ -321,31 +335,31 @@
                                         <h3 class="font-display font-bold text-base text-white">
                                             Voice Two
                                         </h3>
-                                        <span class="px-2 py-0.5 text-[9px] font-mono rounded-full liquid-inner text-emerald-400 font-medium">
+                                        <span class="px-2 py-0.5 text-[9px] font-mono rounded-full liquid-pill text-emerald-400 font-medium">
                                             PLATFORM
                                         </span>
                                     </div>
-                                    <p class="text-[11px] text-slate-400 font-mono">voicetwo.ai • Thai Voice AI Synthesis</p>
+                                    <p class="text-[11px] text-slate-300 font-mono">voicetwo.ai • Thai Voice AI Synthesis</p>
                                 </div>
                             </div>
 
-                            <a href="https://voicetwo.ai" target="_blank" rel="noopener" class="p-2 rounded-xl liquid-pill text-slate-400 hover:text-white transition-all" title="Explore Voice Two">
+                            <a href="https://voicetwo.ai" target="_blank" rel="noopener" class="p-2 rounded-xl liquid-pill text-slate-300 hover:text-white transition-all" title="Explore Voice Two">
                                 <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
                             </a>
                         </div>
 
-                        <p class="text-xs text-slate-400 font-normal leading-relaxed mb-4">
+                        <p class="text-xs text-slate-300 font-normal leading-relaxed mb-4 relative z-10">
                             แพลตฟอร์มสังเคราะห์เสียงพูดภาษาไทยความหน่วงต่ำ ถอดอารมณ์ วรรณยุกต์ และน้ำเสียงไทยได้แม่นยำ สำหรับ Creator และ Enterprise.
                         </p>
 
                         <!-- Voice Synthesizer Studio Preview -->
                         <div class="p-3.5 rounded-xl liquid-inner space-y-2.5">
                             <div class="flex items-center justify-between text-[10px] font-mono">
-                                <span class="text-slate-300 font-semibold flex items-center gap-1.5">
+                                <span class="text-slate-200 font-semibold flex items-center gap-1.5">
                                     <i data-lucide="volume-2" class="w-3.5 h-3.5 text-emerald-400"></i>
                                     <span>Thai Voice Synth Studio</span>
                                 </span>
-                                <select id="voice-preset" onchange="updateVoicePitch()" class="bg-slate-900/90 border border-white/10 rounded-md px-2 py-0.5 text-[10px] text-slate-300 font-mono focus:outline-none shadow-sm">
+                                <select id="voice-preset" onchange="updateVoicePitch()" class="bg-slate-950/90 border border-white/20 rounded-md px-2 py-0.5 text-[10px] text-slate-200 font-mono focus:outline-none shadow-sm">
                                     <option value="thai-male">ชายไทยมาตรฐาน (Warm Male)</option>
                                     <option value="thai-female">หญิงไทยสดใส (Bright Female)</option>
                                     <option value="narrator">ผู้ประกาศข่าว (News Narrator)</option>
@@ -353,15 +367,15 @@
                             </div>
 
                             <div class="flex items-center gap-2">
-                                <button id="synth-play-btn" onclick="toggleThaiAudioSynth()" class="py-2 px-3.5 rounded-lg bg-emerald-600/90 hover:bg-emerald-600 text-white font-display font-semibold text-xs flex items-center justify-center shrink-0 transition-transform active:scale-95 shadow-sm border border-emerald-500/20">
+                                <button id="synth-play-btn" onclick="toggleThaiAudioSynth()" class="py-2 px-3.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-display font-semibold text-xs flex items-center justify-center shrink-0 transition-transform active:scale-95 shadow-sm border border-emerald-400/30">
                                     <i data-lucide="play" id="synth-icon-play" class="w-3.5 h-3.5 fill-current mr-1"></i>
                                     <i data-lucide="square" id="synth-icon-stop" class="w-3.5 h-3.5 fill-current mr-1 hidden"></i>
                                     <span id="synth-btn-label">TEST VOICE</span>
                                 </button>
 
-                                <div class="flex-1 h-9 bg-slate-950/60 rounded-lg border border-white/5 relative overflow-hidden flex items-center justify-center p-1">
+                                <div class="flex-1 h-9 bg-slate-950/80 rounded-lg border border-white/10 relative overflow-hidden flex items-center justify-center p-1">
                                     <canvas id="waveform-canvas" class="w-full h-full block"></canvas>
-                                    <span id="synth-status-text" class="absolute inset-0 flex items-center justify-center text-[10px] font-mono text-slate-500 pointer-events-none">
+                                    <span id="synth-status-text" class="absolute inset-0 flex items-center justify-center text-[10px] font-mono text-slate-400 pointer-events-none">
                                         กด Test Voice เพื่อทดสอบคลื่นเสียง
                                     </span>
                                 </div>
@@ -370,10 +384,10 @@
                     </div>
 
                     <!-- PRODUCT 2: PROOFME -->
-                    <div class="liquid-card rounded-2xl p-4 sm:p-5 relative group">
-                        <div class="flex items-start justify-between gap-3 mb-3">
+                    <div class="liquid-card p-4 sm:p-5 relative group">
+                        <div class="flex items-start justify-between gap-3 mb-3 relative z-10">
                             <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-xl liquid-inner flex items-center justify-center text-slate-300">
+                                <div class="w-9 h-9 rounded-xl liquid-inner flex items-center justify-center text-slate-200">
                                     <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
                                 </div>
                                 <div>
@@ -381,40 +395,40 @@
                                         <h3 class="font-display font-bold text-base text-white">
                                             ProofMe
                                         </h3>
-                                        <span class="px-2 py-0.5 text-[9px] font-mono rounded-full liquid-inner text-slate-300 font-medium">
+                                        <span class="px-2 py-0.5 text-[9px] font-mono rounded-full liquid-pill text-slate-200 font-medium">
                                             E-COMMERCE
                                         </span>
                                     </div>
-                                    <p class="text-[11px] text-slate-400 font-mono">proofme.id • Packing Video Inspection</p>
+                                    <p class="text-[11px] text-slate-300 font-mono">proofme.id • Packing Video Inspection</p>
                                 </div>
                             </div>
 
-                            <a href="https://proofme.id" target="_blank" rel="noopener" class="p-2 rounded-xl liquid-pill text-slate-400 hover:text-white transition-all" title="Explore ProofMe">
+                            <a href="https://proofme.id" target="_blank" rel="noopener" class="p-2 rounded-xl liquid-pill text-slate-300 hover:text-white transition-all" title="Explore ProofMe">
                                 <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
                             </a>
                         </div>
 
-                        <p class="text-xs text-slate-400 font-normal leading-relaxed mb-4">
+                        <p class="text-xs text-slate-300 font-normal leading-relaxed mb-4 relative z-10">
                             ระบบบันทึกวิดีโอแพ็กสินค้าพร้อมสแกนบาร์โค้ดตรวจสอบอัตโนมัติ สำหรับร้านค้าออนไลน์ ยืนยันหลักฐานแม่นยำ.
                         </p>
 
                         <!-- Inspection HUD Simulation -->
                         <div class="p-3.5 rounded-xl liquid-inner relative overflow-hidden">
                             <div class="flex items-center justify-between text-[10px] font-mono mb-2">
-                                <span class="text-slate-300 font-semibold flex items-center gap-1.5">
+                                <span class="text-slate-200 font-semibold flex items-center gap-1.5">
                                     <i data-lucide="scan" class="w-3.5 h-3.5 text-emerald-400"></i>
                                     <span>Inspection HUD Simulation</span>
                                 </span>
-                                <span class="text-slate-500">AUDIT LIVE</span>
+                                <span class="text-slate-400">AUDIT LIVE</span>
                             </div>
 
-                            <div class="h-11 rounded-lg bg-slate-950/60 border border-white/5 relative overflow-hidden flex items-center justify-between px-3 font-mono text-[10px]">
+                            <div class="h-11 rounded-lg bg-slate-950/80 border border-white/10 relative overflow-hidden flex items-center justify-between px-3 font-mono text-[10px]">
                                 <div class="absolute left-0 right-0 h-px bg-emerald-400/80"></div>
-                                <div class="z-10 text-slate-300 flex items-center gap-2">
+                                <div class="z-10 text-slate-200 flex items-center gap-2">
                                     <i data-lucide="barcode" class="w-3.5 h-3.5 text-emerald-400"></i>
-                                    <span>TRACK: <strong class="text-slate-100">TH-BKK-889021</strong></span>
+                                    <span>TRACK: <strong class="text-white">TH-BKK-889021</strong></span>
                                 </div>
-                                <span class="z-10 px-2 py-0.5 rounded-md liquid-inner text-emerald-400 font-semibold text-[9px]">
+                                <span class="z-10 px-2 py-0.5 rounded-md liquid-pill text-emerald-400 font-semibold text-[9px]">
                                     VERIFIED
                                 </span>
                             </div>
@@ -424,41 +438,41 @@
 
                 <!-- SECTION 02: SERVICES & WORKSHOPS -->
                 <section class="space-y-3 mb-8">
-                    <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-2">
                         <span class="font-mono text-[10px] font-semibold text-emerald-400 tracking-widest uppercase flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
                             02 / SERVICES & TRAINING
                         </span>
                     </div>
 
-                    <div onclick="openBookingDrawer('Executive AI Training & Workshops')" class="liquid-card rounded-2xl p-4 cursor-pointer group flex items-start justify-between gap-3 text-slate-300">
-                        <div>
+                    <div onclick="openBookingDrawer('Executive AI Training & Workshops')" class="liquid-card p-4 cursor-pointer group flex items-start justify-between gap-3 text-slate-200">
+                        <div class="relative z-10">
                             <h3 class="font-display font-bold text-sm sm:text-base text-white group-hover:text-emerald-400 transition-colors mb-1">
                                 Executive AI Training & Corporate Workshops
                             </h3>
-                            <p class="text-xs text-slate-400 font-normal leading-relaxed mb-2">
+                            <p class="text-xs text-slate-300 font-normal leading-relaxed mb-2">
                                 หลักสูตร AI สำหรับผู้บริหารและองค์กรไทย: Applied LLMs, Multi-Agent Workflows, Custom GPTs & Enterprise Security.
                             </p>
-                            <span class="inline-flex items-center gap-1.5 text-[10px] font-mono text-slate-500">
+                            <span class="inline-flex items-center gap-1.5 text-[10px] font-mono text-slate-400">
                                 <i data-lucide="users" class="w-3 h-3 text-emerald-400"></i>
                                 <span>60+ Corporate Teams Trained in Thailand</span>
                             </span>
                         </div>
-                        <div class="p-2 rounded-xl liquid-pill text-slate-400 shrink-0 group-hover:text-white transition-all">
+                        <div class="p-2 rounded-xl liquid-pill text-slate-300 shrink-0 group-hover:text-white transition-all relative z-10">
                             <i data-lucide="chevron-right" class="w-4 h-4"></i>
                         </div>
                     </div>
 
-                    <div onclick="openBookingDrawer('Custom AI Agent Solutions')" class="liquid-card rounded-2xl p-4 cursor-pointer group flex items-start justify-between gap-3 text-slate-300">
-                        <div>
+                    <div onclick="openBookingDrawer('Custom AI Agent Solutions')" class="liquid-card p-4 cursor-pointer group flex items-start justify-between gap-3 text-slate-200">
+                        <div class="relative z-10">
                             <h3 class="font-display font-bold text-sm sm:text-base text-white group-hover:text-emerald-400 transition-colors mb-1">
                                 AI Consulting & Custom System Solutions
                             </h3>
-                            <p class="text-xs text-slate-400 font-normal leading-relaxed">
+                            <p class="text-xs text-slate-300 font-normal leading-relaxed">
                                 ออกแบบโครงสร้างระบบ AI สำหรับธุรกิจ: Enterprise RAG, Thai Speech Models, Voice Bot & Autonomous Workflows.
                             </p>
                         </div>
-                        <div class="p-2 rounded-xl liquid-pill text-slate-400 shrink-0 group-hover:text-white transition-all">
+                        <div class="p-2 rounded-xl liquid-pill text-slate-300 shrink-0 group-hover:text-white transition-all relative z-10">
                             <i data-lucide="chevron-right" class="w-4 h-4"></i>
                         </div>
                     </div>
@@ -466,36 +480,36 @@
 
                 <!-- SECTION 03: RESEARCH & PUBLICATIONS -->
                 <section class="space-y-3 mb-8">
-                    <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-2">
                         <span class="font-mono text-[10px] font-semibold text-emerald-400 tracking-widest uppercase flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
                             03 / RESEARCH
                         </span>
                     </div>
 
-                    <div class="liquid-card rounded-2xl p-4 space-y-3.5">
-                        <div class="border-b border-white/5 pb-3">
-                            <div class="flex items-center justify-between text-[10px] font-mono text-slate-500 mb-1">
+                    <div class="liquid-card p-4 space-y-3.5">
+                        <div class="border-b border-white/10 pb-3 relative z-10">
+                            <div class="flex items-center justify-between text-[10px] font-mono text-slate-400 mb-1">
                                 <span class="text-emerald-400 font-semibold">THAI SPEECH MODELING</span>
                                 <span>2025</span>
                             </div>
                             <h4 class="font-display font-bold text-xs sm:text-sm text-white">
                                 Tonal Precision Tuning in Synthetic Thai Acoustic Models
                             </h4>
-                            <p class="text-[11px] text-slate-400 font-normal mt-1">
+                            <p class="text-[11px] text-slate-300 font-normal mt-1">
                                 การปรับแต่งระนาบวรรณยุกต์ภาษาไทยในโมเดลสังเคราะห์เสียงความหน่วงต่ำเพื่อความเป็นธรรมชาติสูงสุด.
                             </p>
                         </div>
 
-                        <div>
-                            <div class="flex items-center justify-between text-[10px] font-mono text-slate-500 mb-1">
+                        <div class="relative z-10">
+                            <div class="flex items-center justify-between text-[10px] font-mono text-slate-400 mb-1">
                                 <span class="text-emerald-400 font-semibold">AGENT EVALUATION</span>
                                 <span>2024</span>
                             </div>
                             <h4 class="font-display font-bold text-xs sm:text-sm text-white">
                                 Hallucination Mitigation in Thai Enterprise RAG Pipelines
                             </h4>
-                            <p class="text-[11px] text-slate-400 font-normal mt-1">
+                            <p class="text-[11px] text-slate-300 font-normal mt-1">
                                 เทคนิคการลดปัญหาข้อมูลคลาดเคลื่อนของ LLMs ในบริบทเอกสารและภาษาไทย.
                             </p>
                         </div>
@@ -504,7 +518,7 @@
 
                 <!-- SECTION 04: CONNECT & SOCIAL LINKS -->
                 <section class="space-y-3 mb-6">
-                    <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-2">
                         <span class="font-mono text-[10px] font-semibold text-emerald-400 tracking-widest uppercase flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
                             04 / CONNECT
@@ -512,32 +526,32 @@
                     </div>
 
                     <div class="grid grid-cols-3 gap-2.5">
-                        <a href="https://github.com" target="_blank" rel="noopener" class="liquid-card p-3 rounded-xl flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-white transition-all active:scale-95">
-                            <i data-lucide="github" class="w-4 h-4 text-slate-300"></i>
-                            <span class="text-xs font-display font-semibold">GitHub</span>
+                        <a href="https://github.com" target="_blank" rel="noopener" class="liquid-card p-3 flex flex-col items-center justify-center gap-1 text-slate-300 hover:text-white transition-all active:scale-95">
+                            <i data-lucide="github" class="w-4 h-4 text-white relative z-10"></i>
+                            <span class="text-xs font-display font-semibold relative z-10">GitHub</span>
                         </a>
 
-                        <a href="https://linkedin.com" target="_blank" rel="noopener" class="liquid-card p-3 rounded-xl flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-white transition-all active:scale-95">
-                            <i data-lucide="linkedin" class="w-4 h-4 text-slate-300"></i>
-                            <span class="text-xs font-display font-semibold">LinkedIn</span>
+                        <a href="https://linkedin.com" target="_blank" rel="noopener" class="liquid-card p-3 flex flex-col items-center justify-center gap-1 text-slate-300 hover:text-white transition-all active:scale-95">
+                            <i data-lucide="linkedin" class="w-4 h-4 text-white relative z-10"></i>
+                            <span class="text-xs font-display font-semibold relative z-10">LinkedIn</span>
                         </a>
 
-                        <a href="mailto:contact@nounxlab.com" class="liquid-card p-3 rounded-xl flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-white transition-all active:scale-95">
-                            <i data-lucide="mail" class="w-4 h-4 text-slate-300"></i>
-                            <span class="text-xs font-display font-semibold">Email</span>
+                        <a href="mailto:contact@nounxlab.com" class="liquid-card p-3 flex flex-col items-center justify-center gap-1 text-slate-300 hover:text-white transition-all active:scale-95">
+                            <i data-lucide="mail" class="w-4 h-4 text-white relative z-10"></i>
+                            <span class="text-xs font-display font-semibold relative z-10">Email</span>
                         </a>
                     </div>
                 </section>
 
                 <!-- FOOTER -->
-                <footer class="pt-5 border-t border-white/5 text-center text-slate-500">
-                    <div class="flex items-center justify-center gap-2 font-mono text-[11px] text-slate-400 mb-1">
+                <footer class="pt-5 border-t border-white/10 text-center text-slate-400">
+                    <div class="flex items-center justify-center gap-2 font-mono text-[11px] text-slate-300 mb-1">
                         <span>© 2026 NounX Lab</span>
                         <span>•</span>
                         <span>Thanabodee AI Hub</span>
                     </div>
-                    <p class="text-[10px] text-slate-600 font-mono">
-                        Designed with Inset Refraction & Chromatic Dispersion Liquid Glass.
+                    <p class="text-[10px] text-slate-500 font-mono">
+                        Pure Liquid Glass System with Realtime Video Camera Background.
                     </p>
                 </footer>
 
@@ -549,8 +563,8 @@
     <div id="booking-drawer" class="fixed inset-0 z-50 pointer-events-none opacity-0 transition-opacity duration-300 flex items-end sm:items-center justify-center p-0 sm:p-4">
         <div onclick="closeBookingDrawer()" class="absolute inset-0 bg-black/70 backdrop-blur-md"></div>
         
-        <div class="relative w-full max-w-lg liquid-panel bg-slate-900/95 text-slate-100 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl z-10 transition-transform duration-300 translate-y-full sm:translate-y-0 max-h-[90vh] overflow-y-auto border border-white/10">
-            <div class="flex items-center justify-between mb-4 border-b border-white/10 pb-3">
+        <div class="relative w-full max-w-lg liquid-panel bg-slate-950/95 text-slate-100 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl z-10 transition-transform duration-300 translate-y-full sm:translate-y-0 max-h-[90vh] overflow-y-auto border border-white/20">
+            <div class="flex items-center justify-between mb-4 border-b border-white/15 pb-3">
                 <div class="flex items-center gap-2.5">
                     <div class="w-8 h-8 rounded-xl liquid-inner text-emerald-400 flex items-center justify-center">
                         <i data-lucide="calendar" class="w-4 h-4"></i>
@@ -568,17 +582,17 @@
             <form onsubmit="handleContactSubmit(event)" class="space-y-3 text-xs">
                 <div>
                     <label class="block text-[10px] font-mono text-slate-300 font-bold mb-1">ORGANIZATION / NAME (ชื่อองค์กร / บริษัท)</label>
-                    <input type="text" name="organization" required placeholder="e.g. Enterprise Corp Thailand" class="w-full bg-slate-950/80 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-white/30">
+                    <input type="text" name="organization" required placeholder="e.g. Enterprise Corp Thailand" class="w-full bg-slate-900/90 border border-white/20 rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-white/40">
                 </div>
 
                 <div>
                     <label class="block text-[10px] font-mono text-slate-300 font-bold mb-1">EMAIL ADDRESS (อีเมลติดต่อ)</label>
-                    <input type="email" name="email" required placeholder="name@company.co.th" class="w-full bg-slate-950/80 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-white/30">
+                    <input type="email" name="email" required placeholder="name@company.co.th" class="w-full bg-slate-900/90 border border-white/20 rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-white/40">
                 </div>
 
                 <div>
                     <label class="block text-[10px] font-mono text-slate-300 font-bold mb-1">SERVICE TYPE (ประเภทบริการ)</label>
-                    <select id="booking-service-select" name="service" class="w-full bg-slate-950/80 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-white/30">
+                    <select id="booking-service-select" name="service" class="w-full bg-slate-900/90 border border-white/20 rounded-xl px-3.5 py-2 text-xs text-slate-100 focus:outline-none focus:border-white/40">
                         <option value="Executive AI Training & Workshops">Executive AI Training / Corporate Workshop</option>
                         <option value="Custom AI Agent Solutions">AI Consulting & Multi-Agent Structure</option>
                         <option value="Voice Two Enterprise Integration">Voice Two Enterprise Integration</option>
@@ -587,10 +601,10 @@
 
                 <div>
                     <label class="block text-[10px] font-mono text-slate-300 font-bold mb-1">PROJECT DETAILS (รายละเอียดงาน)</label>
-                    <textarea name="details" rows="3" placeholder="ระบุเป้าหมาย จำนวนผู้ร่วมเวิร์กชอป หรือช่วงเวลา..." class="w-full bg-slate-950/80 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-white/30"></textarea>
+                    <textarea name="details" rows="3" placeholder="ระบุเป้าหมาย จำนวนผู้ร่วมเวิร์กชอป หรือช่วงเวลา..." class="w-full bg-slate-900/90 border border-white/20 rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-white/40"></textarea>
                 </div>
 
-                <button type="submit" class="w-full py-3 rounded-xl bg-white/15 hover:bg-white/20 text-white font-display font-semibold text-xs uppercase tracking-wider transition-all shadow-md active:scale-98 border border-white/10">
+                <button type="submit" class="w-full py-3 rounded-xl bg-white/20 hover:bg-white/25 text-white font-display font-semibold text-xs uppercase tracking-wider transition-all shadow-md active:scale-98 border border-white/20">
                     Send Inquiry / ส่งข้อมูลติดต่อ
                 </button>
             </form>
@@ -600,7 +614,7 @@
     <!-- SHARE MODAL -->
     <div id="share-modal" class="fixed inset-0 z-50 pointer-events-none opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
         <div onclick="closeShareModal()" class="absolute inset-0 bg-black/70 backdrop-blur-md"></div>
-        <div class="relative w-full max-w-xs liquid-panel bg-slate-900/95 rounded-3xl p-5 text-center z-10 shadow-2xl border border-white/10">
+        <div class="relative w-full max-w-xs liquid-panel bg-slate-950/95 rounded-3xl p-5 text-center z-10 shadow-2xl border border-white/20">
             <button onclick="closeShareModal()" class="absolute top-3 right-3 p-1 rounded-full liquid-pill text-slate-400 hover:text-white">
                 <i data-lucide="x" class="w-4 h-4"></i>
             </button>
@@ -612,7 +626,7 @@
             <h3 class="font-display font-bold text-base text-white mb-1">Share Hub</h3>
             <p class="text-xs text-slate-400 mb-3">คัดลอกลิงก์เพื่อแชร์</p>
 
-            <button onclick="copyProfileLink()" class="w-full py-2.5 rounded-xl bg-white/15 hover:bg-white/20 text-white font-display font-semibold text-xs flex items-center justify-center gap-2 transition-all shadow-sm border border-white/10">
+            <button onclick="copyProfileLink()" class="w-full py-2.5 rounded-xl bg-white/20 hover:bg-white/25 text-white font-display font-semibold text-xs flex items-center justify-center gap-2 transition-all shadow-sm border border-white/20">
                 <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                 <span id="copy-text">Copy Hub Link</span>
             </button>
@@ -620,13 +634,13 @@
     </div>
 
     <!-- TOAST NOTIFICATION -->
-    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900/90 backdrop-blur-lg border border-white/15 text-white px-4 py-2.5 rounded-xl text-xs font-display font-semibold shadow-2xl opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-2">
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 backdrop-blur-lg border border-white/20 text-white px-4 py-2.5 rounded-xl text-xs font-display font-semibold shadow-2xl opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-2">
         <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
         <span id="toast-text">Message sent!</span>
     </div>
 
     <!-- ========================================================= -->
-    <!-- THREE.JS WEBGL CAMERA SCRIPT (NO FLOATING/TILTING)         -->
+    <!-- THREE.JS WEBGL CAMERA ENGINE (100% SHARP FULLSCREEN)      -->
     <!-- ========================================================= -->
     <script>
         // Initialize Lucide Icons
