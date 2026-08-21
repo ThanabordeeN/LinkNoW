@@ -56,19 +56,46 @@
             pointer-events: none;
         }
 
-        /* Outer Main Container Liquid Shell (Ultra Clear Crystal Glass) */
+        /* Outer Main Container Liquid Shell (Identical Style to Liquid Cards) */
         .liquid-panel {
-            background: rgba(10, 14, 20, 0.10);
-            -webkit-backdrop-filter: blur(14px) saturate(140%);
-            backdrop-filter: blur(14px) saturate(140%);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(12, 18, 26, 0.08);
+            -webkit-backdrop-filter: blur(10px) saturate(130%);
+            backdrop-filter: blur(10px) saturate(130%);
+            border: 1px solid rgba(255, 255, 255, 0.32);
             box-shadow: 
-                inset 0 0 0 1px rgba(255, 255, 255, 0.38),
-                inset 0 0 16px 3px rgba(255, 255, 255, 0.15),
-                inset 0 0 32px 6px rgba(255, 255, 255, 0.04),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.45),
+                inset 0 0 16px 3px rgba(255, 255, 255, 0.18),
+                inset 0 0 32px 6px rgba(255, 255, 255, 0.06),
                 inset 0 4px 16px rgba(0, 0, 0, 0.12),
-                0 24px 48px -12px rgba(0, 0, 0, 0.5);
+                0 20px 44px -8px rgba(0, 0, 0, 0.45);
+            border-radius: 32px;
             position: relative;
+            overflow: hidden;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .liquid-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(150deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.04) 35%, transparent 75%);
+            pointer-events: none;
+            z-index: 1;
+            transition: opacity 0.25s ease;
+        }
+
+        .liquid-panel::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 12%;
+            right: 12%;
+            height: 1.5px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.95), transparent);
+            pointer-events: none;
+            z-index: 2;
+            transition: opacity 0.25s ease;
         }
 
         /* EXACT LIQUID GLASS CONTENT CARDS (50% Clearer & 50% Reduced Blur) */
@@ -356,12 +383,12 @@
             </section>
 
             <!-- ================================================================= -->
-            <!-- MAIN LIQUID GLASS CONTAINER (Static Layout)                       -->
+            <!-- MAIN LIQUID GLASS CONTAINER (Unified Card Style)                  -->
             <!-- ================================================================= -->
-            <main class="liquid-panel rounded-t-[40px] sm:rounded-t-[52px] p-5 sm:p-7 relative overflow-hidden">
+            <main class="liquid-panel rounded-3xl sm:rounded-[36px] p-5 sm:p-7 relative overflow-hidden mb-8 sm:mb-12 shadow-2xl">
                 
                 <!-- Micro Accent Line -->
-                <div class="w-10 h-0.5 bg-white/25 rounded-full mx-auto mb-6"></div>
+                <div class="w-10 h-0.5 bg-white/25 rounded-full mx-auto mb-6 relative z-10"></div>
 
                 <!-- SECTION 01: FEATURED PRODUCTS -->
                 <section class="space-y-4 mb-8">
