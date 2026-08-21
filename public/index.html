@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thanabodee / NAV — WebGL Liquid Glass Lens Hub</title>
+    <title>Thanabodee / NAV — WebGL Liquid Glass Camera Lens</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,7 +43,7 @@
 
     <style>
         /* ============================================================
-           THREE.JS / WEBGL LIQUID GLASS STYLING
+           THREE.JS / WEBGL LIQUID GLASS STYLING (PURE WEBCAM + LENS)
            ============================================================ */
 
         /* WebGL Canvas */
@@ -58,9 +58,9 @@
 
         /* Pure Dark Liquid Glass Overlays */
         .liquid-panel {
-            background: rgba(8, 11, 16, 0.45);
-            backdrop-filter: blur(24px) saturate(160%);
-            -webkit-backdrop-filter: blur(24px) saturate(160%);
+            background: rgba(8, 11, 16, 0.4);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
             border: 1px solid rgba(255, 255, 255, 0.12);
             box-shadow: inset 0 0 2px 1px #ffffff59, 
                         inset 0 0 10px 4px #ffffff26, 
@@ -70,8 +70,8 @@
 
         .liquid-card {
             background: rgba(255, 255, 255, 0.035);
-            backdrop-filter: blur(16px) saturate(140%);
-            -webkit-backdrop-filter: blur(16px) saturate(140%);
+            backdrop-filter: blur(14px) saturate(140%);
+            -webkit-backdrop-filter: blur(14px) saturate(140%);
             box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.25), 
                         inset 0 0 8px 2px rgba(255, 255, 255, 0.1), 
                         0 4px 20px -2px rgba(0, 0, 0, 0.4);
@@ -147,6 +147,9 @@
 
     <!-- Hidden Video Element for Realtime WebGL VideoTexture -->
     <video id="webcam-video" autoplay playsinline muted class="hidden"></video>
+
+    <!-- Hidden Canvas for Freezing Video Frame upon Camera Off -->
+    <canvas id="freeze-canvas" class="hidden"></canvas>
 
     <!-- TOP FLOATING UTILITY CONTROLS -->
     <header class="fixed top-4 right-4 z-40 flex items-center gap-2">
@@ -577,10 +580,8 @@
         lucide.createIcons();
 
         // ==========================================
-        // 1. THREE.JS GLSL LIQUID GLASS ENGINE
+        // 1. THREE.JS GLSL LIQUID GLASS ENGINE (WEBCAM + INTERACTIVE LENS)
         // ==========================================
-        const defaultImageUrl = "https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?q=80&w=2000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-        
         let renderer, scene, camera, material, mesh;
         let defaultTexture, videoTexture;
         let mouse = new THREE.Vector2(0, 0);
@@ -650,10 +651,10 @@
             }
 
             vec4 Icon (vec2 uv) {
-                float box = Box(uv, vec2(PX(55.)));
-                float boxShape = S(PX(2.0), 0., box - PX(55.));
-                float boxDisp = S(PX(35.), 0., box - PX(28.));
-                float boxLight = boxShape * S(0., PX(30.), box - PX(45.));
+                float box = Box(uv, vec2(PX(60.)));
+                float boxShape = S(PX(2.0), 0., box - PX(60.));
+                float boxDisp = S(PX(40.), 0., box - PX(30.));
+                float boxLight = boxShape * S(0., PX(35.), box - PX(50.));
                 float icon = IconPhoto(uv);
                 return vec4(boxShape, boxDisp, boxLight, icon);
             }
@@ -671,12 +672,26 @@
                 uv2 *= S(-0.6, 1.0, icon.y);
                 uv2 += M;
 
-                vec3 col = mix(tex * 0.85, 0.08 + LiquidGlass(uTexture, uv2, 10.0, 10.0, 22.0).rgb * 0.75, icon.x);
-                col += icon.z * 0.9 + icon.w;
+                // Sharp live camera background + Interactive Liquid Glass Lens refraction
+                vec3 col = mix(tex * 0.95, 0.05 + LiquidGlass(uTexture, uv2, 10.0, 10.0, 26.0).rgb * 0.9, icon.x);
+                col += icon.z * 0.95 + icon.w;
 
                 gl_FragColor = vec4(col, 1.0);
             }
         `;
+
+        function createDarkPlaceholderTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 256;
+            canvas.height = 256;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#080B10';
+            ctx.fillRect(0, 0, 256, 256);
+            const tex = new THREE.CanvasTexture(canvas);
+            tex.minFilter = THREE.LinearFilter;
+            tex.magFilter = THREE.LinearFilter;
+            return tex;
+        }
 
         function initWebGLScene() {
             const canvas = document.getElementById('webgl-canvas');
@@ -687,19 +702,12 @@
             scene = new THREE.Scene();
             camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
-            const textureLoader = new THREE.TextureLoader();
-            defaultTexture = textureLoader.load(defaultImageUrl, (tex) => {
-                tex.minFilter = THREE.LinearFilter;
-                tex.magFilter = THREE.LinearFilter;
-                if (material) {
-                    material.uniforms.uTexRes.value.set(tex.image.width, tex.image.height);
-                }
-            });
+            defaultTexture = createDarkPlaceholderTexture();
 
             const uniforms = {
                 uMouse: { value: new THREE.Vector2(0, 0) },
                 uRes: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-                uTexRes: { value: new THREE.Vector2(2000, 1333) },
+                uTexRes: { value: new THREE.Vector2(1920, 1080) },
                 uTexture: { value: defaultTexture }
             };
 
@@ -718,6 +726,9 @@
             window.addEventListener('touchmove', onTouchMove, { passive: true });
 
             animate();
+
+            // Auto-start webcam so live feed is immediately active
+            initCamera();
         }
 
         function onWindowResize() {
@@ -744,7 +755,7 @@
         function animate() {
             requestAnimationFrame(animate);
 
-            // Smooth Lerp Mouse Tracking
+            // Smooth Lerp Mouse/Touch Tracking
             mouse.x += (targetMouse.x - mouse.x) * 0.08;
             mouse.y += (targetMouse.y - mouse.y) * 0.08;
 
@@ -819,20 +830,37 @@
 
                     if (material) {
                         material.uniforms.uTexture.value = videoTexture;
-                        material.uniforms.uTexRes.value.set(video.videoWidth || 1280, video.videoHeight || 720);
+                        material.uniforms.uTexRes.value.set(video.videoWidth || 1920, video.videoHeight || 1080);
                     }
 
                     isCameraActive = true;
                     if (statusLabel) statusLabel.textContent = 'CAM: LIVE';
                     if (indicator) indicator.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse';
                     if (flipBtn) flipBtn.classList.remove('hidden');
-                    showToast("WebGL Camera Lens Active (" + (currentFacingMode === 'environment' ? "Rear" : "Front") + ")");
+                    showToast("Live Camera Active (" + (currentFacingMode === 'environment' ? "Rear" : "Front") + ")");
                 }
             } catch (err) {
                 isCameraActive = false;
                 if (statusLabel) statusLabel.textContent = 'CAM: OFF';
                 if (indicator) indicator.className = 'w-1.5 h-1.5 rounded-full bg-slate-500';
-                showToast("Camera unavailable");
+            }
+        }
+
+        function freezeCurrentFrame() {
+            const video = document.getElementById('webcam-video');
+            const freezeCanvas = document.getElementById('freeze-canvas');
+            if (video && freezeCanvas && video.videoWidth && video.videoHeight) {
+                freezeCanvas.width = video.videoWidth;
+                freezeCanvas.height = video.videoHeight;
+                const ctx = freezeCanvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, freezeCanvas.width, freezeCanvas.height);
+                const frozenTexture = new THREE.CanvasTexture(freezeCanvas);
+                frozenTexture.minFilter = THREE.LinearFilter;
+                frozenTexture.magFilter = THREE.LinearFilter;
+                if (material) {
+                    material.uniforms.uTexture.value = frozenTexture;
+                    material.uniforms.uTexRes.value.set(freezeCanvas.width, freezeCanvas.height);
+                }
             }
         }
 
@@ -841,6 +869,7 @@
             const flipBtn = document.getElementById('cam-flip-btn');
 
             if (isCameraActive && videoStream) {
+                freezeCurrentFrame();
                 videoStream.getTracks().forEach(track => track.stop());
                 videoStream = null;
                 isCameraActive = false;
@@ -849,18 +878,10 @@
                     video.srcObject = null;
                 }
 
-                // Fallback to high-res liquid background texture
-                if (material && defaultTexture) {
-                    material.uniforms.uTexture.value = defaultTexture;
-                    if (defaultTexture.image) {
-                        material.uniforms.uTexRes.value.set(defaultTexture.image.width, defaultTexture.image.height);
-                    }
-                }
-
                 document.getElementById('cam-status-label').textContent = 'CAM: OFF';
                 document.getElementById('cam-indicator').className = 'w-1.5 h-1.5 rounded-full bg-slate-500';
                 if (flipBtn) flipBtn.classList.add('hidden');
-                showToast("Camera disabled (Shader Active)");
+                showToast("Camera disabled (Last frame preserved)");
             } else {
                 initCamera();
             }
