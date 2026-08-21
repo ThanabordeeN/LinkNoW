@@ -282,10 +282,10 @@
             <i data-lucide="refresh-cw" class="w-3.5 h-3.5 relative z-10 group-hover:rotate-180 group-hover:text-emerald-400 transition-all duration-300"></i>
         </button>
 
-        <!-- Camera Toggle Pill (CAM: OFF / CAM: LIVE) -->
+        <!-- Camera Toggle Pill (CAM: LIVE by default) -->
         <button onclick="toggleCamera()" id="cam-toggle-btn" class="px-3.5 py-1.5 rounded-full liquid-pill text-[11px] font-mono font-medium flex items-center gap-2 active:scale-95 text-slate-200 group cursor-pointer hover:text-white transition-all select-none">
-            <span class="w-1.5 h-1.5 rounded-full bg-slate-500 relative z-10 group-hover:scale-125 transition-all" id="cam-indicator"></span>
-            <span id="cam-status-label" class="relative z-10 font-mono text-[11px] group-hover:text-emerald-400 transition-colors">CAM: OFF</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse relative z-10 group-hover:scale-125 group-hover:shadow-[0_0_8px_#10B981] transition-all" id="cam-indicator"></span>
+            <span id="cam-status-label" class="relative z-10 font-mono text-[11px] text-emerald-400 group-hover:text-emerald-300 transition-colors">CAM: LIVE</span>
         </button>
 
         <!-- Share Button -->
@@ -1088,6 +1088,15 @@
             }
             await initCamera();
         }
+
+        // Auto-request camera on first user interaction if browser policy blocked automatic media start
+        const triggerAutoCamera = () => {
+            if (!isCameraActive && !videoStream) {
+                initCamera();
+            }
+        };
+        window.addEventListener('touchstart', triggerAutoCamera, { once: true, passive: true });
+        window.addEventListener('click', triggerAutoCamera, { once: true });
 
         // ==========================================
         // 3. AUDIO SYNTHESIZER FOR VOICE TWO
