@@ -73,8 +73,8 @@
         }
 
         #bg-image.frozen-blur {
-            filter: blur(28px) brightness(0.75) saturate(140%);
-            transform: scale(1.1);
+            filter: blur(6px) brightness(0.9) saturate(115%);
+            transform: scale(1.02);
         }
 
         #webgl-canvas {
@@ -303,30 +303,30 @@
     <!-- Hidden Canvas for Freezing Video Frame upon Camera Off -->
     <canvas id="freeze-canvas" class="hidden"></canvas>
 
-    <!-- TOP FLOATING UTILITY CONTROLS (AUTO-HIDE ON SCROLL DOWN) -->
-    <header id="floating-header" class="fixed top-4 right-4 z-40 flex items-center gap-2 transition-all duration-300 ease-out transform">
+    <!-- BOTTOM-RIGHT FLOATING UTILITY CONTROLS (AUTO-HIDE ON SCROLL DOWN) -->
+    <div id="floating-controls" class="fixed bottom-5 right-5 z-40 flex items-center gap-2 transition-all duration-300 ease-out transform">
         <!-- Camera Stop & Freeze Frame Button (Visible when CAM is LIVE) -->
-        <button onclick="stopAndFreezeCamera()" id="cam-stop-btn" class="hidden px-2.5 py-1.5 rounded-full liquid-pill text-amber-400 hover:text-amber-300 hover:border-amber-400/50 active:scale-95 transition-all group cursor-pointer flex items-center gap-1.5 select-none shadow-lg" title="Freeze frame as blurred background">
+        <button onclick="stopAndFreezeCamera()" id="cam-stop-btn" class="hidden px-2.5 py-1.5 rounded-full liquid-pill text-amber-400 hover:text-amber-300 hover:border-amber-400/50 active:scale-95 transition-all group cursor-pointer flex items-center gap-1.5 select-none shadow-xl" title="Stop Camera and freeze subtle blurred frame">
             <i data-lucide="pause" class="w-3.5 h-3.5 relative z-10 group-hover:scale-110 transition-transform"></i>
             <span class="text-[10px] font-mono font-bold relative z-10">STOP</span>
         </button>
 
         <!-- Camera Flip Button (Front / Rear Toggle) -->
-        <button onclick="flipCameraFacing()" id="cam-flip-btn" class="hidden p-2 rounded-full liquid-pill text-slate-300 hover:text-white active:scale-95 transition-all group cursor-pointer" title="Flip Camera">
+        <button onclick="flipCameraFacing()" id="cam-flip-btn" class="hidden p-2 rounded-full liquid-pill text-slate-300 hover:text-white active:scale-95 transition-all group cursor-pointer shadow-xl" title="Flip Camera">
             <i data-lucide="refresh-cw" class="w-3.5 h-3.5 relative z-10 group-hover:rotate-180 group-hover:text-emerald-400 transition-all duration-300"></i>
         </button>
 
         <!-- Camera Toggle Pill (CAM: OFF by default) -->
-        <button onclick="toggleCamera()" id="cam-toggle-btn" class="px-3.5 py-1.5 rounded-full liquid-pill text-[11px] font-mono font-medium flex items-center gap-2 active:scale-95 text-slate-200 group cursor-pointer hover:text-white transition-all select-none" title="Toggle Camera Wallpaper">
+        <button onclick="toggleCamera()" id="cam-toggle-btn" class="px-3.5 py-1.5 rounded-full liquid-pill text-[11px] font-mono font-medium flex items-center gap-2 active:scale-95 text-slate-200 group cursor-pointer hover:text-white transition-all select-none shadow-xl" title="Toggle Camera Wallpaper">
             <span class="w-1.5 h-1.5 rounded-full bg-slate-500 relative z-10 group-hover:scale-125 transition-all" id="cam-indicator"></span>
             <span id="cam-status-label" class="relative z-10 font-mono text-[11px] text-slate-300 group-hover:text-white transition-colors">CAM: OFF</span>
         </button>
 
         <!-- Share Button -->
-        <button onclick="openShareModal()" class="p-2 rounded-full liquid-pill text-slate-300 hover:text-white active:scale-95 transition-all group cursor-pointer" title="Share Hub">
+        <button onclick="openShareModal()" class="p-2 rounded-full liquid-pill text-slate-300 hover:text-white active:scale-95 transition-all group cursor-pointer shadow-xl" title="Share Hub">
             <i data-lucide="share-2" class="w-3.5 h-3.5 relative z-10 group-hover:scale-110 group-hover:text-emerald-400 transition-all"></i>
         </button>
-    </header>
+    </div>
 
     <!-- MAIN APPLICATION CONTAINER -->
     <div class="max-w-md sm:max-w-lg mx-auto pt-10 sm:pt-14 min-h-screen flex flex-col justify-between relative z-10 px-3 sm:px-0">
@@ -1323,7 +1323,7 @@
                     indicator.className = 'w-1.5 h-1.5 rounded-full bg-amber-400 relative z-10 group-hover:scale-125 transition-all';
                 }
 
-                showToast("Frame frozen & blurred as background");
+                showToast("Camera stopped (Subtle blurred background active)");
             } catch (err) {
                 console.error("Failed to freeze camera frame:", err);
                 resetToDefaultWallpaper();
@@ -1491,20 +1491,20 @@
         // ==========================================
         let lastScrollY = window.scrollY;
         let scrollTicking = false;
-        const floatingHeader = document.getElementById('floating-header');
+        const floatingControls = document.getElementById('floating-controls');
 
         window.addEventListener('scroll', () => {
-            if (!scrollTicking && floatingHeader) {
+            if (!scrollTicking && floatingControls) {
                 window.requestAnimationFrame(() => {
                     const currentScrollY = window.scrollY;
                     if (currentScrollY > 40 && currentScrollY > lastScrollY) {
-                        // Scrolling down: smoothly hide floating button header
-                        floatingHeader.classList.add('-translate-y-24', 'opacity-0', 'pointer-events-none');
-                        floatingHeader.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+                        // Scrolling down: smoothly slide down & hide bottom floating controls
+                        floatingControls.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+                        floatingControls.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
                     } else {
-                        // Scrolling up or at top: smoothly reveal floating button header
-                        floatingHeader.classList.remove('-translate-y-24', 'opacity-0', 'pointer-events-none');
-                        floatingHeader.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+                        // Scrolling up or at top: smoothly restore bottom floating controls
+                        floatingControls.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
+                        floatingControls.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
                     }
                     lastScrollY = Math.max(0, currentScrollY);
                     scrollTicking = false;
