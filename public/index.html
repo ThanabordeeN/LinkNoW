@@ -303,8 +303,8 @@
     <!-- Hidden Canvas for Freezing Video Frame upon Camera Off -->
     <canvas id="freeze-canvas" class="hidden"></canvas>
 
-    <!-- BOTTOM-RIGHT FLOATING UTILITY CONTROLS (AUTO-HIDE ON SCROLL DOWN) -->
-    <div id="floating-controls" class="fixed bottom-5 right-5 z-40 flex items-center gap-2 transition-all duration-300 ease-out transform">
+    <!-- BOTTOM-RIGHT FLOATING UTILITY CONTROLS (ALWAYS VISIBLE) -->
+    <div id="floating-controls" class="fixed bottom-5 right-5 z-40 flex items-center gap-2">
         <!-- Camera Stop & Freeze Frame Button (Visible when CAM is LIVE) -->
         <button onclick="stopAndFreezeCamera()" id="cam-stop-btn" class="hidden px-2.5 py-1.5 rounded-full liquid-pill text-amber-400 hover:text-amber-300 hover:border-amber-400/50 active:scale-95 transition-all group cursor-pointer flex items-center gap-1.5 select-none shadow-xl" title="Stop Camera and freeze subtle blurred frame">
             <i data-lucide="pause" class="w-3.5 h-3.5 relative z-10 group-hover:scale-110 transition-transform"></i>
@@ -1485,33 +1485,6 @@
             showToast("เปิดอีเมลพร้อมส่งไปที่ thanabordee.noun@gmail.com แล้ว!");
             form.reset();
         }
-
-        // ==========================================
-        // 4. SCROLL AUTO-HIDE FLOATING CONTROLS
-        // ==========================================
-        let lastScrollY = window.scrollY;
-        let scrollTicking = false;
-        const floatingControls = document.getElementById('floating-controls');
-
-        window.addEventListener('scroll', () => {
-            if (!scrollTicking && floatingControls) {
-                window.requestAnimationFrame(() => {
-                    const currentScrollY = window.scrollY;
-                    if (currentScrollY > 40 && currentScrollY > lastScrollY) {
-                        // Scrolling down: smoothly slide down & hide bottom floating controls
-                        floatingControls.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
-                        floatingControls.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
-                    } else {
-                        // Scrolling up or at top: smoothly restore bottom floating controls
-                        floatingControls.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
-                        floatingControls.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
-                    }
-                    lastScrollY = Math.max(0, currentScrollY);
-                    scrollTicking = false;
-                });
-                scrollTicking = true;
-            }
-        }, { passive: true });
     </script>
 </body>
 </html>
