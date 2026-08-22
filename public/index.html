@@ -303,28 +303,27 @@
     <!-- Hidden Canvas for Freezing Video Frame upon Camera Off -->
     <canvas id="freeze-canvas" class="hidden"></canvas>
 
-    <!-- BOTTOM-RIGHT FLOATING UTILITY CONTROLS (ALWAYS VISIBLE) -->
-    <div id="floating-controls" class="fixed bottom-5 right-5 z-40 flex items-center gap-2">
+    <!-- BOTTOM-RIGHT FLOATING UTILITY CONTROLS (VERTICAL CIRCULAR DOCK) -->
+    <div id="floating-controls" class="fixed bottom-5 right-5 z-40 flex flex-col items-center gap-2.5">
+        <!-- Camera Flip Button (Front / Rear Toggle - Visible when CAM is LIVE) -->
+        <button onclick="flipCameraFacing()" id="cam-flip-btn" class="hidden w-11 h-11 rounded-full liquid-pill flex items-center justify-center text-slate-300 hover:text-white active:scale-95 transition-all group cursor-pointer shadow-xl relative select-none" title="Flip Camera">
+            <i data-lucide="refresh-cw" class="w-4 h-4 relative z-10 group-hover:rotate-180 group-hover:text-emerald-400 transition-all duration-300"></i>
+        </button>
+
         <!-- Camera Stop & Freeze Frame Button (Visible when CAM is LIVE) -->
-        <button onclick="stopAndFreezeCamera()" id="cam-stop-btn" class="hidden px-2.5 py-1.5 rounded-full liquid-pill text-amber-400 hover:text-amber-300 hover:border-amber-400/50 active:scale-95 transition-all group cursor-pointer flex items-center gap-1.5 select-none shadow-xl" title="Stop Camera and freeze subtle blurred frame">
-            <i data-lucide="pause" class="w-3.5 h-3.5 relative z-10 group-hover:scale-110 transition-transform"></i>
-            <span class="text-[10px] font-mono font-bold relative z-10">STOP</span>
+        <button onclick="stopAndFreezeCamera()" id="cam-stop-btn" class="hidden w-11 h-11 rounded-full liquid-pill flex items-center justify-center text-amber-400 hover:text-amber-300 hover:border-amber-400/50 active:scale-95 transition-all group cursor-pointer select-none shadow-xl relative" title="Stop Camera and freeze frame">
+            <i data-lucide="pause" class="w-4 h-4 relative z-10 group-hover:scale-110 transition-transform"></i>
         </button>
 
-        <!-- Camera Flip Button (Front / Rear Toggle) -->
-        <button onclick="flipCameraFacing()" id="cam-flip-btn" class="hidden p-2 rounded-full liquid-pill text-slate-300 hover:text-white active:scale-95 transition-all group cursor-pointer shadow-xl" title="Flip Camera">
-            <i data-lucide="refresh-cw" class="w-3.5 h-3.5 relative z-10 group-hover:rotate-180 group-hover:text-emerald-400 transition-all duration-300"></i>
+        <!-- Camera Toggle Circular Button (CAM Status: OFF / LIVE / FROZEN) -->
+        <button onclick="toggleCamera()" id="cam-toggle-btn" class="w-11 h-11 rounded-full liquid-pill flex items-center justify-center text-slate-300 hover:text-white active:scale-95 transition-all group cursor-pointer select-none shadow-xl relative" title="Toggle Camera Wallpaper">
+            <i data-lucide="video" id="cam-icon" class="w-4 h-4 relative z-10 text-slate-400 group-hover:text-white transition-colors"></i>
+            <span class="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-slate-500 z-20 group-hover:scale-125 transition-all" id="cam-indicator"></span>
         </button>
 
-        <!-- Camera Toggle Pill (CAM: OFF by default) -->
-        <button onclick="toggleCamera()" id="cam-toggle-btn" class="px-3.5 py-1.5 rounded-full liquid-pill text-[11px] font-mono font-medium flex items-center gap-2 active:scale-95 text-slate-200 group cursor-pointer hover:text-white transition-all select-none shadow-xl" title="Toggle Camera Wallpaper">
-            <span class="w-1.5 h-1.5 rounded-full bg-slate-500 relative z-10 group-hover:scale-125 transition-all" id="cam-indicator"></span>
-            <span id="cam-status-label" class="relative z-10 font-mono text-[11px] text-slate-300 group-hover:text-white transition-colors">CAM: OFF</span>
-        </button>
-
-        <!-- Share Button -->
-        <button onclick="openShareModal()" class="p-2 rounded-full liquid-pill text-slate-300 hover:text-white active:scale-95 transition-all group cursor-pointer shadow-xl" title="Share Hub">
-            <i data-lucide="share-2" class="w-3.5 h-3.5 relative z-10 group-hover:scale-110 group-hover:text-emerald-400 transition-all"></i>
+        <!-- Share Circular Button -->
+        <button onclick="openShareModal()" class="w-11 h-11 rounded-full liquid-pill flex items-center justify-center text-slate-300 hover:text-white active:scale-95 transition-all group cursor-pointer shadow-xl relative select-none" title="Share Hub">
+            <i data-lucide="share-2" class="w-4 h-4 relative z-10 group-hover:scale-110 group-hover:text-emerald-400 transition-all"></i>
         </button>
     </div>
 
@@ -1213,7 +1212,8 @@
 
         async function initCamera() {
             const video = document.getElementById('webcam-video');
-            const statusLabel = document.getElementById('cam-status-label');
+            const camToggleBtn = document.getElementById('cam-toggle-btn');
+            const camIcon = document.getElementById('cam-icon');
             const indicator = document.getElementById('cam-indicator');
             const stopBtn = document.getElementById('cam-stop-btn');
             const flipBtn = document.getElementById('cam-flip-btn');
@@ -1255,11 +1255,15 @@
                         webglCanvas.classList.remove('opacity-0');
                         webglCanvas.classList.add('opacity-100');
                     }
-                    if (statusLabel) {
-                        statusLabel.textContent = 'CAM: LIVE';
-                        statusLabel.className = 'relative z-10 font-mono text-[11px] text-emerald-400 group-hover:text-emerald-300 transition-colors';
+                    if (camIcon) {
+                        camIcon.className = 'w-4 h-4 relative z-10 text-emerald-400 group-hover:text-emerald-300 transition-colors';
                     }
-                    if (indicator) indicator.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse relative z-10 group-hover:scale-125 group-hover:shadow-[0_0_8px_#10B981] transition-all';
+                    if (indicator) {
+                        indicator.className = 'absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-emerald-400 animate-pulse z-20 group-hover:scale-125 group-hover:shadow-[0_0_8px_#10B981] transition-all';
+                    }
+                    if (camToggleBtn) {
+                        camToggleBtn.title = "Camera LIVE (Click to turn off)";
+                    }
                     if (stopBtn) stopBtn.classList.remove('hidden');
                     if (flipBtn) flipBtn.classList.remove('hidden');
                     showToast("Live Camera Active (" + (currentFacingMode === 'environment' ? "Rear" : "Front") + ")");
@@ -1275,10 +1279,11 @@
             const freezeCanvas = document.getElementById('freeze-canvas');
             const bgImage = document.getElementById('bg-image');
             const webglCanvas = document.getElementById('webgl-canvas');
+            const camToggleBtn = document.getElementById('cam-toggle-btn');
+            const camIcon = document.getElementById('cam-icon');
+            const indicator = document.getElementById('cam-indicator');
             const stopBtn = document.getElementById('cam-stop-btn');
             const flipBtn = document.getElementById('cam-flip-btn');
-            const statusLabel = document.getElementById('cam-status-label');
-            const indicator = document.getElementById('cam-indicator');
 
             if (!video || !videoStream || !isCameraActive) return;
 
@@ -1315,12 +1320,14 @@
                 // Update UI state & button visibility
                 if (stopBtn) stopBtn.classList.add('hidden');
                 if (flipBtn) flipBtn.classList.add('hidden');
-                if (statusLabel) {
-                    statusLabel.textContent = 'CAM: FROZEN';
-                    statusLabel.className = 'relative z-10 font-mono text-[11px] text-amber-400 group-hover:text-amber-300 transition-colors';
+                if (camIcon) {
+                    camIcon.className = 'w-4 h-4 relative z-10 text-amber-400 group-hover:text-amber-300 transition-colors';
                 }
                 if (indicator) {
-                    indicator.className = 'w-1.5 h-1.5 rounded-full bg-amber-400 relative z-10 group-hover:scale-125 transition-all';
+                    indicator.className = 'absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-amber-400 z-20 group-hover:scale-125 transition-all';
+                }
+                if (camToggleBtn) {
+                    camToggleBtn.title = "Camera FROZEN (Click to turn on)";
                 }
 
                 showToast("Camera stopped (Subtle blurred background active)");
@@ -1340,10 +1347,11 @@
 
         function resetToDefaultWallpaper() {
             const video = document.getElementById('webcam-video');
+            const camToggleBtn = document.getElementById('cam-toggle-btn');
+            const camIcon = document.getElementById('cam-icon');
+            const indicator = document.getElementById('cam-indicator');
             const stopBtn = document.getElementById('cam-stop-btn');
             const flipBtn = document.getElementById('cam-flip-btn');
-            const statusLabel = document.getElementById('cam-status-label');
-            const indicator = document.getElementById('cam-indicator');
             const webglCanvas = document.getElementById('webgl-canvas');
             const bgImage = document.getElementById('bg-image');
 
@@ -1375,11 +1383,15 @@
                 }
             }
 
-            if (statusLabel) {
-                statusLabel.textContent = 'CAM: OFF';
-                statusLabel.className = 'relative z-10 font-mono text-[11px] text-slate-300 group-hover:text-white transition-colors';
+            if (camIcon) {
+                camIcon.className = 'w-4 h-4 relative z-10 text-slate-400 group-hover:text-white transition-colors';
             }
-            if (indicator) indicator.className = 'w-1.5 h-1.5 rounded-full bg-slate-500 relative z-10 group-hover:scale-125 transition-all';
+            if (indicator) {
+                indicator.className = 'absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-slate-500 z-20 group-hover:scale-125 transition-all';
+            }
+            if (camToggleBtn) {
+                camToggleBtn.title = "Toggle Camera Wallpaper (CAM: OFF)";
+            }
             if (stopBtn) stopBtn.classList.add('hidden');
             if (flipBtn) flipBtn.classList.add('hidden');
             showToast("Default Wallpaper active");
