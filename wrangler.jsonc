@@ -7,6 +7,10 @@
     "directory": "./public",
     "binding": "ASSETS"
   },
+  "routes": [
+    { "pattern": "me.nounxlab.com", "custom_domain": true }
+  ],
+  "workers_dev": true,
   "observability": {
     "enabled": true
   }

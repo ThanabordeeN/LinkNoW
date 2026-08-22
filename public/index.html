@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thanabodee / NAV — Liquid Glass Hub</title>
     
+    <!-- Favicon & App Icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="alternate icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    
     <!-- Google Fonts: Noto Sans & Noto Sans Thai + JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,32 +52,48 @@
            HARDWARE-ACCELERATED LIQUID GLASS (60 FPS GPU PIPELINE)
            ============================================================ */
 
-        /* Fullscreen WebGL Live Camera Canvas */
-        #webgl-canvas {
+        /* Dynamic Background & WebGL Canvas */
+        #bg-container {
             position: fixed;
             inset: 0;
             width: 100vw;
             height: 100vh;
             z-index: 0;
             pointer-events: none;
+            overflow: hidden;
+        }
+
+        #bg-image, #bg-video, #bg-gif {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            inset: 0;
+        }
+
+        #webgl-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            transition: opacity 0.5s ease-in-out;
         }
 
         /* ============================================================
-           OUTER SHELL: LIQUID GLASS WITH IDENTICAL SPECULAR RIM & EDGE LIGHT
+           OUTER SHELL: LIQUID GLASS WITH DEEP BLUR & CLEAR GLASS
            ============================================================ */
         .liquid-panel-shell {
-            background: rgba(12, 18, 26, 0.06);
-            -webkit-backdrop-filter: blur(8px) saturate(125%);
-            backdrop-filter: blur(8px) saturate(125%);
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            border-top: 1.5px solid rgba(255, 255, 255, 0.65);
+            background: rgba(5, 8, 14, 0.18);
+            -webkit-backdrop-filter: blur(24px) saturate(140%);
+            backdrop-filter: blur(24px) saturate(140%);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-top: 1px solid rgba(255, 255, 255, 0.4);
             box-shadow: 
-                inset 0 1px 0 0 rgba(255, 255, 255, 0.8),
-                inset 0 0 0 1px rgba(255, 255, 255, 0.45),
-                inset 0 0 16px 3px rgba(255, 255, 255, 0.18),
-                inset 0 0 32px 6px rgba(255, 255, 255, 0.06),
-                inset 0 3px 10px rgba(0, 0, 0, 0.1),
-                0 20px 44px -8px rgba(0, 0, 0, 0.45);
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.4),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.15),
+                inset 0 2px 8px rgba(0, 0, 0, 0.25),
+                0 24px 48px -8px rgba(0, 0, 0, 0.5);
             border-radius: 44px;
             position: relative;
             overflow: hidden;
@@ -83,7 +105,7 @@
             position: absolute;
             inset: 0;
             border-radius: inherit;
-            background: linear-gradient(150deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.04) 35%, transparent 75%);
+            background: linear-gradient(150deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.01) 35%, transparent 70%);
             pointer-events: none;
             z-index: 1;
         }
@@ -92,10 +114,10 @@
             content: '';
             position: absolute;
             top: 0;
-            left: 10%;
-            right: 10%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.95) 25%, #ffffff 50%, rgba(255, 255, 255, 0.95) 75%, transparent);
+            left: 15%;
+            right: 15%;
+            height: 1.5px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7) 25%, #ffffff 50%, rgba(255, 255, 255, 0.7) 75%, transparent);
             pointer-events: none;
             z-index: 2;
         }
@@ -104,18 +126,16 @@
            EXACT LIQUID GLASS CONTENT CARDS (iPhone Widget Squircle 28px)
            ============================================================ */
         .liquid-card {
-            background: rgba(12, 18, 26, 0.08);
-            -webkit-backdrop-filter: blur(10px) saturate(130%);
-            backdrop-filter: blur(10px) saturate(130%);
-            border: 1px solid rgba(255, 255, 255, 0.32);
-            border-top: 1.5px solid rgba(255, 255, 255, 0.65);
+            background: rgba(5, 8, 14, 0.22);
+            -webkit-backdrop-filter: blur(24px) saturate(140%);
+            backdrop-filter: blur(24px) saturate(140%);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-top: 1px solid rgba(255, 255, 255, 0.45);
             box-shadow: 
-                inset 0 1px 0 0 rgba(255, 255, 255, 0.8),
-                inset 0 0 0 1px rgba(255, 255, 255, 0.45),
-                inset 0 0 14px 2px rgba(255, 255, 255, 0.18),
-                inset 0 0 28px 6px rgba(255, 255, 255, 0.06),
-                inset 0 3px 10px rgba(0, 0, 0, 0.1),
-                0 10px 30px -4px rgba(0, 0, 0, 0.35);
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.45),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+                inset 0 2px 6px rgba(0, 0, 0, 0.2),
+                0 12px 32px -4px rgba(0, 0, 0, 0.4);
             border-radius: 28px;
             position: relative;
             overflow: hidden;
@@ -128,7 +148,7 @@
             position: absolute;
             inset: 0;
             border-radius: inherit;
-            background: linear-gradient(150deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.04) 35%, transparent 75%);
+            background: linear-gradient(150deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.01) 35%, transparent 70%);
             pointer-events: none;
             z-index: 1;
             transition: opacity 0.25s ease;
@@ -139,36 +159,33 @@
             content: '';
             position: absolute;
             top: 0;
-            left: 10%;
-            right: 10%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.95) 25%, #ffffff 50%, rgba(255, 255, 255, 0.95) 75%, transparent);
+            left: 15%;
+            right: 15%;
+            height: 1.5px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7) 25%, #ffffff 50%, rgba(255, 255, 255, 0.7) 75%, transparent);
             pointer-events: none;
             z-index: 2;
             transition: opacity 0.25s ease;
         }
 
         .liquid-card:hover {
-            border-color: rgba(255, 255, 255, 0.55);
-            background: rgba(16, 24, 36, 0.13);
+            border-color: rgba(255, 255, 255, 0.35);
+            background: rgba(8, 14, 24, 0.28);
             box-shadow: 
-                inset 0 0 0 1.5px rgba(255, 255, 255, 0.65),
-                inset 0 0 18px 4px rgba(255, 255, 255, 0.28),
-                inset 0 0 36px 10px rgba(255, 255, 255, 0.12),
-                inset 0 4px 12px rgba(0, 0, 0, 0.12),
-                0 16px 36px -6px rgba(0, 0, 0, 0.5);
+                inset 0 0 0 1px rgba(255, 255, 255, 0.35),
+                inset 0 2px 8px rgba(0, 0, 0, 0.25),
+                0 18px 40px -6px rgba(0, 0, 0, 0.55);
         }
 
         /* Inset Module Boxes (Smooth Squircle 18px) */
         .liquid-inner {
-            background: rgba(0, 0, 0, 0.09);
-            -webkit-backdrop-filter: blur(7px) saturate(120%);
-            backdrop-filter: blur(7px) saturate(120%);
-            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(0, 0, 0, 0.2);
+            -webkit-backdrop-filter: blur(16px) saturate(130%);
+            backdrop-filter: blur(16px) saturate(130%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             box-shadow: 
-                inset 0 0 0 1px rgba(255, 255, 255, 0.25),
-                inset 0 0 8px 2px rgba(255, 255, 255, 0.08),
-                inset 0 2px 4px rgba(0, 0, 0, 0.1);
+                inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 2px 5px rgba(0, 0, 0, 0.2);
             border-radius: 18px;
             position: relative;
             z-index: 5;
@@ -177,16 +194,14 @@
 
         /* Liquid Action Pills & Badges */
         .liquid-pill {
-            background: rgba(12, 18, 26, 0.09);
-            -webkit-backdrop-filter: blur(8px) saturate(130%);
-            backdrop-filter: blur(8px) saturate(130%);
-            border: 1px solid rgba(255, 255, 255, 0.32);
+            background: rgba(5, 8, 14, 0.2);
+            -webkit-backdrop-filter: blur(20px) saturate(130%);
+            backdrop-filter: blur(20px) saturate(130%);
+            border: 1px solid rgba(255, 255, 255, 0.18);
             box-shadow: 
-                inset 0 0 0 1px rgba(255, 255, 255, 0.45),
-                inset 0 0 10px 2px rgba(255, 255, 255, 0.15),
-                inset 0 0 20px 4px rgba(255, 255, 255, 0.05),
-                inset 0 2px 6px rgba(0, 0, 0, 0.09),
-                0 4px 14px rgba(0, 0, 0, 0.25);
+                inset 0 0 0 1px rgba(255, 255, 255, 0.18),
+                inset 0 1px 4px rgba(0, 0, 0, 0.18),
+                0 6px 16px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow: hidden;
             transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -197,7 +212,7 @@
             position: absolute;
             inset: 0;
             border-radius: inherit;
-            background: linear-gradient(150deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.04) 35%, transparent 75%);
+            background: linear-gradient(150deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.01) 35%, transparent 70%);
             pointer-events: none;
             z-index: 1;
             transition: opacity 0.25s ease;
@@ -207,24 +222,22 @@
             content: '';
             position: absolute;
             top: 0;
-            left: 15%;
-            right: 15%;
+            left: 20%;
+            right: 20%;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.95), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
             pointer-events: none;
             z-index: 2;
             transition: opacity 0.25s ease;
         }
 
         .liquid-pill:hover {
-            border-color: rgba(255, 255, 255, 0.55);
-            background: rgba(16, 24, 36, 0.15);
+            border-color: rgba(255, 255, 255, 0.35);
+            background: rgba(10, 16, 28, 0.28);
             box-shadow: 
-                inset 0 0 0 1.5px rgba(255, 255, 255, 0.65),
-                inset 0 0 14px 3px rgba(255, 255, 255, 0.25),
-                inset 0 0 28px 6px rgba(255, 255, 255, 0.1),
-                inset 0 3px 8px rgba(0, 0, 0, 0.12),
-                0 8px 24px -2px rgba(0, 0, 0, 0.35);
+                inset 0 0 0 1px rgba(255, 255, 255, 0.3),
+                inset 0 2px 6px rgba(0, 0, 0, 0.22),
+                0 10px 24px -2px rgba(0, 0, 0, 0.4);
         }
 
         /* Modern Scrollbar */
@@ -271,9 +284,12 @@
 <body class="bg-[#080B10] text-slate-200 font-body min-h-screen relative overflow-x-hidden selection:bg-emerald-500/30 selection:text-emerald-200 transition-colors duration-300">
 
     <!-- ========================================================= -->
-    <!-- THREE.JS WEBGL FULLSCREEN LIVE CAMERA CANVAS              -->
+    <!-- DYNAMIC BACKGROUND SYSTEM (UHD WALLPAPER / LIVE WEBCAM)   -->
     <!-- ========================================================= -->
-    <canvas id="webgl-canvas"></canvas>
+    <div id="bg-container" class="select-none">
+        <img id="bg-image" src="/images/background.jpg" alt="Skradinski Buk UHD Wallpaper" class="w-full h-full object-cover" />
+        <canvas id="webgl-canvas" class="opacity-0"></canvas>
+    </div>
 
     <!-- Hidden Video Element for Realtime WebGL VideoTexture -->
     <video id="webcam-video" autoplay playsinline muted class="hidden"></video>
@@ -288,10 +304,10 @@
             <i data-lucide="refresh-cw" class="w-3.5 h-3.5 relative z-10 group-hover:rotate-180 group-hover:text-emerald-400 transition-all duration-300"></i>
         </button>
 
-        <!-- Camera Toggle Pill (CAM: LIVE by default) -->
-        <button onclick="toggleCamera()" id="cam-toggle-btn" class="px-3.5 py-1.5 rounded-full liquid-pill text-[11px] font-mono font-medium flex items-center gap-2 active:scale-95 text-slate-200 group cursor-pointer hover:text-white transition-all select-none">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse relative z-10 group-hover:scale-125 group-hover:shadow-[0_0_8px_#10B981] transition-all" id="cam-indicator"></span>
-            <span id="cam-status-label" class="relative z-10 font-mono text-[11px] text-emerald-400 group-hover:text-emerald-300 transition-colors">CAM: LIVE</span>
+        <!-- Camera Toggle Pill (CAM: OFF by default) -->
+        <button onclick="toggleCamera()" id="cam-toggle-btn" class="px-3.5 py-1.5 rounded-full liquid-pill text-[11px] font-mono font-medium flex items-center gap-2 active:scale-95 text-slate-200 group cursor-pointer hover:text-white transition-all select-none" title="Toggle Camera Wallpaper">
+            <span class="w-1.5 h-1.5 rounded-full bg-slate-500 relative z-10 group-hover:scale-125 transition-all" id="cam-indicator"></span>
+            <span id="cam-status-label" class="relative z-10 font-mono text-[11px] text-slate-300 group-hover:text-white transition-colors">CAM: OFF</span>
         </button>
 
         <!-- Share Button -->
@@ -305,26 +321,18 @@
         
         <div>
             <!-- ========================================================= -->
-            <!-- TOP SECTION: AVATAR & TYPOGRAPHY                          -->
+            <!-- TOP CARD: AVATAR, PROFILE & HERO CTA (Crystal Shell)      -->
             <!-- ========================================================= -->
-            <section class="flex flex-col items-center text-center px-4 mb-8 sm:mb-10">
+            <section class="liquid-panel-shell rounded-[36px] sm:rounded-[44px] p-5 sm:p-7 relative overflow-hidden mb-6 sm:mb-8 shadow-2xl flex flex-col items-center text-center">
                 
+                <!-- Micro Accent Line -->
+                <div class="w-10 h-0.5 bg-white/25 rounded-full mx-auto mb-6 relative z-10"></div>
+
                 <!-- Circular Avatar Frame with Liquid Ring -->
                 <div class="relative mb-5 group">
                     <div class="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1.5 liquid-card cursor-pointer overflow-hidden flex items-center justify-center active:scale-95 transition-all">
-                        <div class="w-full h-full rounded-full bg-[#080B10] shadow-inner overflow-hidden flex items-center justify-center border border-white/10 relative z-10">
-                            <svg class="w-full h-full pt-1.5 group-hover:scale-105 transition-transform duration-300" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="50" cy="50" r="48" fill="#111827"/>
-                                <circle cx="50" cy="40" r="30" fill="#10B981" opacity="0.15"/>
-                                <circle cx="50" cy="36" r="18" fill="#F3F4F6"/>
-                                <rect x="36" y="32" width="12" height="8" rx="2" fill="#0F172A" stroke="#10B981" stroke-width="1.2"/>
-                                <rect x="52" y="32" width="12" height="8" rx="2" fill="#0F172A" stroke="#10B981" stroke-width="1.2"/>
-                                <line x1="48" y1="36" x2="52" y2="36" stroke="#10B981" stroke-width="1.2"/>
-                                <path d="M28 36C28 22 38 16 50 16C62 16 72 22 72 36" stroke="#64748B" stroke-width="1.5" stroke-linecap="round"/>
-                                <circle cx="28" cy="36" r="2.5" fill="#10B981"/>
-                                <path d="M22 66C22 55 34 52 50 52C66 52 78 55 78 66V90H22V66Z" fill="#1E293B"/>
-                                <path d="M42 52L50 64L58 52" stroke="#10B981" stroke-width="1.2"/>
-                            </svg>
+                        <div class="w-full h-full rounded-full bg-[#080B10] shadow-inner overflow-hidden flex items-center justify-center border border-white/15 relative z-10">
+                            <img src="/images/profile.jpg" alt="Thanabordee / NAV" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 select-none" />
                         </div>
                     </div>
 
@@ -336,17 +344,17 @@
                 </div>
 
                 <!-- Text Header -->
-                <div class="space-y-2 max-w-sm mx-auto">
+                <div class="space-y-2 max-w-sm sm:max-w-md mx-auto relative z-10">
                     <h1 class="font-display font-bold text-2xl sm:text-3xl tracking-tight text-white flex items-center justify-center gap-2">
-                        <span>THANABODEE / NAV</span>
+                        <span>THANABORDEE / NAV</span>
                     </h1>
 
                     <p class="font-tech font-semibold text-xs sm:text-sm text-emerald-400 tracking-wider uppercase">
-                        Master AI Builder & Corporate AI Trainer
+                        AI Trainer • AI Builder • Applied AI Researcher
                     </p>
 
                     <p class="font-body text-xs sm:text-sm text-slate-300 font-normal leading-relaxed">
-                        AI Agents • Thai Voice AI • Applied Research
+                        AI Agents • Embedded Systems • Applied AI
                     </p>
 
                     <!-- Location & Lab Pill (Voice Two Style On Hover) -->
@@ -361,8 +369,8 @@
                 </div>
 
                 <!-- Primary CTA Card (Voice Two Liquid Card Anatomy & On Hover) -->
-                <div class="mt-6 w-full max-w-sm sm:max-w-md mx-auto">
-                    <div onclick="openBookingDrawer()" class="liquid-card p-4 sm:p-5 rounded-[28px] group cursor-pointer active:scale-98 transition-all">
+                <div class="mt-6 w-full max-w-sm sm:max-w-md mx-auto relative z-10">
+                    <div onclick="openBookingDrawer('AI Training & Workshops')" class="liquid-card p-4 sm:p-5 rounded-[28px] group cursor-pointer active:scale-98 transition-all">
                         <div class="flex items-center justify-between gap-3 relative z-10">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-2xl liquid-inner flex items-center justify-center text-emerald-400 group-hover:scale-110 group-hover:text-emerald-300 transition-transform shrink-0">
@@ -377,11 +385,11 @@
                                             BOOKING
                                         </span>
                                     </div>
-                                    <p class="text-[11px] text-slate-300 font-mono">Corporate Training • AI Architecture • Keynotes</p>
+                                    <p class="text-[11px] text-slate-300 font-mono">Hands-on Workshops • AI Agents • System Consulting</p>
                                 </div>
                             </div>
 
-                            <div class="p-2.5 rounded-2xl liquid-pill text-slate-300 group-hover:text-white group-hover:border-white/40 group-hover:bg-white/10 group-hover:translate-x-0.5 transition-all shrink-0" title="Work with Thanabodee">
+                            <div class="w-8 h-8 rounded-full liquid-pill flex items-center justify-center text-slate-300 group-hover:text-white group-hover:border-white/40 group-hover:bg-white/10 group-hover:translate-x-0.5 transition-all shrink-0" title="Work with Thanabodee">
                                 <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
                             </div>
                         </div>
@@ -397,22 +405,22 @@
                 <!-- Micro Accent Line -->
                 <div class="w-10 h-0.5 bg-white/25 rounded-full mx-auto mb-6 relative z-10"></div>
 
-                <!-- SECTION 01: FEATURED PRODUCTS -->
+                <!-- SECTION 01: BUILDING NOW -->
                 <section class="space-y-4 mb-8">
                     <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
                         <span class="font-mono text-[10px] font-semibold text-emerald-400 tracking-widest uppercase flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                            01 / FEATURED PRODUCTS
+                            01 / BUILDING NOW
                         </span>
-                        <span class="text-[10px] font-mono text-slate-400">NounX Lab</span>
+                        <span class="text-[10px] font-mono text-slate-400">Shipped & In Dev</span>
                     </div>
 
                     <!-- PRODUCT 1: VOICE TWO -->
                     <div class="liquid-card p-4 sm:p-5 relative group">
-                        <div class="flex items-start justify-between gap-3 mb-3 relative z-10">
+                        <div class="flex items-start justify-between gap-3 mb-2.5 relative z-10">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-2xl liquid-inner flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform shrink-0">
-                                    <i data-lucide="mic" class="w-4 h-4"></i>
+                                <div class="w-10 h-10 rounded-2xl liquid-inner flex items-center justify-center p-1 group-hover:scale-105 transition-transform shrink-0 overflow-hidden shadow-inner">
+                                    <img src="/images/voice2-icon.png" alt="Voice Two" class="w-full h-full object-cover rounded-xl" />
                                 </div>
                                 <div>
                                     <div class="flex items-center gap-2">
@@ -420,166 +428,66 @@
                                             Voice Two
                                         </h3>
                                         <span class="px-2 py-0.5 text-[9px] font-mono rounded-full liquid-pill text-emerald-400 font-medium">
-                                            PLATFORM
+                                            BETA
                                         </span>
                                     </div>
-                                    <p class="text-[11px] text-slate-300 font-mono">voicetwo.ai • Thai Voice AI Synthesis</p>
+                                    <p class="text-[11px] text-slate-300 font-mono">voice2.nounxlab.com • Thai AI Voice Platform</p>
                                 </div>
                             </div>
 
-                            <a href="https://voicetwo.ai" target="_blank" rel="noopener" class="p-2.5 rounded-2xl liquid-pill text-slate-300 hover:text-white group-hover:text-white group-hover:border-white/40 group-hover:bg-white/10 transition-all shrink-0" title="Explore Voice Two">
+                            <a href="https://voice2.nounxlab.com/" target="_blank" rel="noopener" class="w-8 h-8 rounded-full liquid-pill flex items-center justify-center text-slate-300 hover:text-white group-hover:text-white group-hover:border-white/40 group-hover:bg-white/10 transition-all shrink-0" title="Explore Voice Two">
                                 <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
                             </a>
                         </div>
 
-                        <p class="text-xs text-slate-300 font-normal leading-relaxed mb-4 relative z-10">
-                            แพลตฟอร์มสังเคราะห์เสียงพูดภาษาไทยความหน่วงต่ำ ถอดอารมณ์ วรรณยุกต์ และน้ำเสียงไทยได้แม่นยำ สำหรับ Creator และ Enterprise.
+                        <p class="text-xs text-slate-300 font-normal leading-relaxed relative z-10">
+                            แพลตฟอร์มสร้างเสียง AI ภาษาไทยสำหรับ Creator และ Developer รองรับหลายโมเดลและรูปแบบเสียงในระบบเดียว.
                         </p>
-                        <div class="p-3.5 rounded-2xl liquid-inner space-y-2.5 relative z-10">
-                            <div class="flex items-center justify-between text-[10px] font-mono">
-                                <span class="text-slate-200 font-semibold flex items-center gap-1.5">
-                                    <i data-lucide="volume-2" class="w-3.5 h-3.5 text-emerald-400"></i>
-                                    <span>Thai Voice Synth Studio</span>
-                                </span>
-                                <select id="voice-preset" onchange="updateVoicePitch()" class="bg-black/70 border border-white/20 rounded-lg px-2 py-0.5 text-[10px] text-slate-200 font-mono focus:outline-none shadow-sm">
-                                    <option value="thai-male">ชายไทยมาตรฐาน (Warm Male)</option>
-                                    <option value="thai-female">หญิงไทยสดใส (Bright Female)</option>
-                                    <option value="narrator">ผู้ประกาศข่าว (News Narrator)</option>
-                                </select>
-                            </div>
-
-                            <div class="flex items-center gap-2">
-                                <button id="synth-play-btn" onclick="toggleThaiAudioSynth()" class="py-2 px-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-display font-semibold text-xs flex items-center justify-center shrink-0 transition-transform active:scale-95 shadow-sm border border-emerald-400/30">
-                                    <i data-lucide="play" id="synth-icon-play" class="w-3.5 h-3.5 fill-current mr-1"></i>
-                                    <i data-lucide="square" id="synth-icon-stop" class="w-3.5 h-3.5 fill-current mr-1 hidden"></i>
-                                    <span id="synth-btn-label">TEST VOICE</span>
-                                </button>
-
-                                <div class="flex-1 h-9 bg-black/70 rounded-xl border border-white/10 relative overflow-hidden flex items-center justify-center p-1">
-                                    <canvas id="waveform-canvas" class="w-full h-full block"></canvas>
-                                    <span id="synth-status-text" class="absolute inset-0 flex items-center justify-center text-[10px] font-mono text-slate-400 pointer-events-none">
-                                        กด Test Voice เพื่อทดสอบคลื่นเสียง
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- PRODUCT 2: PROOFME -->
                     <div class="liquid-card p-4 sm:p-5 relative group">
-                        <div class="flex items-start justify-between gap-3 mb-3 relative z-10">
+                        <div class="flex items-start justify-between gap-3 mb-2.5 relative z-10">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-2xl liquid-inner flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform shrink-0">
-                                    <i data-lucide="shield-check" class="w-4 h-4"></i>
+                                <div class="w-10 h-10 rounded-2xl liquid-inner flex items-center justify-center p-1 group-hover:scale-105 transition-transform shrink-0 overflow-hidden shadow-inner">
+                                    <img src="/images/proofme-app-icon.png" alt="ProofMe" class="w-full h-full object-cover rounded-xl" />
                                 </div>
                                 <div>
                                     <div class="flex items-center gap-2">
                                         <h3 class="font-display font-bold text-base text-white group-hover:text-emerald-400 transition-colors">
                                             ProofMe
                                         </h3>
-                                        <span class="px-2 py-0.5 text-[9px] font-mono rounded-full liquid-pill text-emerald-400 font-medium">
-                                            E-COMMERCE
+                                        <span class="px-2 py-0.5 text-[9px] font-mono rounded-full liquid-pill text-emerald-400 font-bold">
+                                            AVAILABLE ON APP STORE
                                         </span>
                                     </div>
-                                    <p class="text-[11px] text-slate-300 font-mono">proofme.id • Packing Video Inspection</p>
+                                    <p class="text-[11px] text-slate-300 font-mono">www.getproofme.com • Packing Video Evidence for Online Sellers</p>
                                 </div>
                             </div>
 
-                            <a href="https://proofme.id" target="_blank" rel="noopener" class="p-2.5 rounded-2xl liquid-pill text-slate-300 hover:text-white group-hover:text-white group-hover:border-white/40 group-hover:bg-white/10 transition-all shrink-0" title="Explore ProofMe">
+                            <a href="https://www.getproofme.com/" target="_blank" rel="noopener" class="w-8 h-8 rounded-full liquid-pill flex items-center justify-center text-slate-300 hover:text-white group-hover:text-white group-hover:border-white/40 group-hover:bg-white/10 transition-all shrink-0" title="Explore ProofMe">
                                 <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
                             </a>
                         </div>
 
-                        <p class="text-xs text-slate-300 font-normal leading-relaxed mb-4 relative z-10">
-                            ระบบบันทึกวิดีโอแพ็กสินค้าพร้อมสแกนบาร์โค้ดตรวจสอบอัตโนมัติ สำหรับร้านค้าออนไลน์ ยืนยันหลักฐานแม่นยำ.
+                        <p class="text-xs text-slate-300 font-normal leading-relaxed relative z-10">
+                            Scan an order. Record the packing process. Find the evidence when you need it. บันทึกวิดีโอแพ็กสินค้าพร้อมสแกน Order / Tracking สำหรับ Shopee, Lazada และ TikTok Shop.
                         </p>
-
-                        <!-- Inspection HUD Simulation -->
-                        <div class="p-3.5 rounded-2xl liquid-inner relative overflow-hidden space-y-2 relative z-10">
-                            <div class="flex items-center justify-between text-[10px] font-mono">
-                                <span class="text-slate-200 font-semibold flex items-center gap-1.5">
-                                    <i data-lucide="scan" class="w-3.5 h-3.5 text-emerald-400"></i>
-                                    <span>Inspection HUD Simulation</span>
-                                </span>
-                                <span class="text-emerald-400 font-semibold">AUDIT LIVE</span>
-                            </div>
-
-                            <div class="h-11 rounded-xl bg-black/70 border border-white/10 relative overflow-hidden flex items-center justify-between px-3 font-mono text-[10px]">
-                                <div class="absolute left-0 right-0 h-px bg-emerald-400/80"></div>
-                                <div class="z-10 text-slate-200 flex items-center gap-2">
-                                    <i data-lucide="barcode" class="w-3.5 h-3.5 text-emerald-400"></i>
-                                    <span>TRACK: <strong class="text-white">TH-BKK-889021</strong></span>
-                                </div>
-                                <span class="z-10 px-2 py-0.5 rounded-md liquid-pill text-emerald-400 font-semibold text-[9px]">
-                                    VERIFIED
-                                </span>
-                            </div>
-                        </div>
                     </div>
                 </section>
 
-                <!-- SECTION 02: SERVICES & TRAINING -->
+                <!-- SECTION 02: SELECTED WORK -->
                 <section class="space-y-4 mb-8">
                     <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
                         <span class="font-mono text-[10px] font-semibold text-emerald-400 tracking-widest uppercase flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                            02 / SERVICES & CAPABILITIES
+                            02 / SELECTED WORK
                         </span>
-                        <span class="text-[10px] font-mono text-slate-400">Expertise</span>
+                        <span class="text-[10px] font-mono text-slate-400">AI × Physical Systems</span>
                     </div>
 
-                    <!-- SERVICE 1: EXECUTIVE AI TRAINING -->
-                    <div onclick="openBookingDrawer('Executive AI Training & Workshops')" class="liquid-card p-4 sm:p-5 relative group cursor-pointer">
-                        <div class="flex items-start justify-between gap-3 mb-3 relative z-10">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-2xl liquid-inner flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform shrink-0">
-                                    <i data-lucide="graduation-cap" class="w-4 h-4"></i>
-                                </div>
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <h3 class="font-display font-bold text-base text-white group-hover:text-emerald-400 transition-colors">
-                                            Executive AI Training
-                                        </h3>
-                                        <span class="px-2 py-0.5 text-[9px] font-mono rounded-full liquid-pill text-emerald-400 font-medium">
-                                            WORKSHOP
-                                        </span>
-                                    </div>
-                                    <p class="text-[11px] text-slate-300 font-mono">Corporate AI Workshops • Applied LLMs</p>
-                                </div>
-                            </div>
-
-                            <div class="p-2.5 rounded-2xl liquid-pill text-slate-300 group-hover:text-white group-hover:border-white/40 group-hover:bg-white/10 transition-all shrink-0" title="Book Workshop">
-                                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
-                            </div>
-                        </div>
-
-                        <p class="text-xs text-slate-300 font-normal leading-relaxed mb-4 relative z-10">
-                            หลักสูตร AI สำหรับผู้บริหารและองค์กรไทย: Applied LLMs, Multi-Agent Workflows, Custom GPTs & Enterprise Security.
-                        </p>
-
-                        <!-- Inset Track Box -->
-                        <div class="p-3.5 rounded-2xl liquid-inner space-y-2 relative z-10">
-                            <div class="flex items-center justify-between text-[10px] font-mono">
-                                <span class="text-slate-200 font-semibold flex items-center gap-1.5">
-                                    <i data-lucide="users" class="w-3.5 h-3.5 text-emerald-400"></i>
-                                    <span>Corporate Training Track</span>
-                                </span>
-                                <span class="text-emerald-400 font-semibold">60+ TEAMS TRAINED</span>
-                            </div>
-                            <div class="h-9 rounded-xl bg-black/70 border border-white/10 relative overflow-hidden flex items-center justify-between px-3 font-mono text-[10px]">
-                                <div class="text-slate-300 flex items-center gap-2">
-                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400"></i>
-                                    <span>Hands-on Labs • Custom Enterprise Curriculum</span>
-                                </div>
-                                <span class="px-2 py-0.5 rounded-md liquid-pill text-emerald-400 font-semibold text-[9px]">
-                                    ACTIVE
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- SERVICE 2: AI CONSULTING & CUSTOM SYSTEM SOLUTIONS -->
-                    <div onclick="openBookingDrawer('Custom AI Agent Solutions')" class="liquid-card p-4 sm:p-5 relative group cursor-pointer">
+                    <!-- WORK 1: MCP/U -->
+                    <div class="liquid-card p-4 sm:p-5 relative group">
                         <div class="flex items-start justify-between gap-3 mb-3 relative z-10">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-2xl liquid-inner flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform shrink-0">
@@ -588,58 +496,46 @@
                                 <div>
                                     <div class="flex items-center gap-2">
                                         <h3 class="font-display font-bold text-base text-white group-hover:text-emerald-400 transition-colors">
-                                            AI Consulting & Systems
+                                            MCP/U
                                         </h3>
-                                        <span class="px-2 py-0.5 text-[9px] font-mono rounded-full liquid-pill text-emerald-400 font-medium">
-                                            SOLUTIONS
+                                        <span class="px-2 py-0.5 text-[9px] font-mono rounded-full liquid-pill text-emerald-400 font-bold">
+                                            v1.2.1 • MCP FRAMEWORK
                                         </span>
                                     </div>
-                                    <p class="text-[11px] text-slate-300 font-mono">System Architecture • Thai Speech & RAG</p>
+                                    <p class="text-[11px] text-slate-300 font-mono">Unified Interface for AI-Ready Microcontrollers</p>
                                 </div>
                             </div>
 
-                            <div class="p-2.5 rounded-2xl liquid-pill text-slate-300 group-hover:text-white group-hover:border-white/40 group-hover:bg-white/10 transition-all shrink-0" title="Inquire Solutions">
+                            <a href="https://github.com/ThanabordeeN" target="_blank" rel="noopener" class="w-8 h-8 rounded-full liquid-pill flex items-center justify-center text-slate-300 hover:text-white group-hover:text-white group-hover:border-white/40 group-hover:bg-white/10 transition-all shrink-0" title="View MCP/U on GitHub">
                                 <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
-                            </div>
+                            </a>
                         </div>
 
                         <p class="text-xs text-slate-300 font-normal leading-relaxed mb-4 relative z-10">
-                            ออกแบบโครงสร้างระบบ AI สำหรับธุรกิจ: Enterprise RAG, Thai Speech Models, Voice Bot & Autonomous Workflows.
+                            Dynamic MCP framework & client (<code class="text-emerald-400 font-mono">mcpu-client</code>) เชื่อมต่อ AI Agent (Claude Code, Claude Desktop, Gemini CLI, OpenCode) เข้ากับ Microcontroller (ESP32/Arduino) ผ่าน Serial/TCP โดยไม่ต้อง Hardcode เครื่องมือ.
                         </p>
 
-                        <!-- Inset Stack Box -->
                         <div class="p-3.5 rounded-2xl liquid-inner space-y-2 relative z-10">
                             <div class="flex items-center justify-between text-[10px] font-mono">
                                 <span class="text-slate-200 font-semibold flex items-center gap-1.5">
                                     <i data-lucide="network" class="w-3.5 h-3.5 text-emerald-400"></i>
-                                    <span>Architecture Stack</span>
+                                    <span>AI ↔ Embedded Bridge</span>
                                 </span>
-                                <span class="text-emerald-400 font-semibold">PRODUCTION-READY</span>
+                                <span class="text-emerald-400 font-semibold">DYNAMIC TOOLS</span>
                             </div>
                             <div class="h-9 rounded-xl bg-black/70 border border-white/10 relative overflow-hidden flex items-center justify-between px-3 font-mono text-[10px]">
-                                <div class="text-slate-300 flex items-center gap-2">
-                                    <i data-lucide="bot" class="w-3.5 h-3.5 text-emerald-400"></i>
-                                    <span>Enterprise RAG • Speech AI • Multi-Agent</span>
+                                <div class="text-slate-300 flex items-center gap-2 truncate">
+                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i>
+                                    <span class="truncate">MCP • ESP32 • Arduino • Multi-Device • Serial/TCP</span>
                                 </div>
-                                <span class="px-2 py-0.5 rounded-md liquid-pill text-emerald-400 font-semibold text-[9px]">
-                                    DEPLOY
+                                <span class="px-2 py-0.5 rounded-md liquid-pill text-emerald-400 font-semibold text-[9px] shrink-0">
+                                    NPM / GITHUB
                                 </span>
                             </div>
                         </div>
                     </div>
-                </section>
 
-                <!-- SECTION 03: RESEARCH & PUBLICATIONS -->
-                <section class="space-y-4 mb-8">
-                    <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
-                        <span class="font-mono text-[10px] font-semibold text-emerald-400 tracking-widest uppercase flex items-center gap-1.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                            03 / RESEARCH & PAPERS
-                        </span>
-                        <span class="text-[10px] font-mono text-slate-400">Publications</span>
-                    </div>
-
-                    <!-- RESEARCH 1: THAI SPEECH MODELING -->
+                    <!-- WORK 2: MODSCAN -->
                     <div class="liquid-card p-4 sm:p-5 relative group">
                         <div class="flex items-start justify-between gap-3 mb-3 relative z-10">
                             <div class="flex items-center gap-3">
@@ -649,121 +545,361 @@
                                 <div>
                                     <div class="flex items-center gap-2">
                                         <h3 class="font-display font-bold text-base text-white group-hover:text-emerald-400 transition-colors">
-                                            Tonal Precision Tuning
+                                            ModScan
                                         </h3>
-                                        <span class="px-2 py-0.5 text-[9px] font-mono rounded-full liquid-pill text-emerald-400 font-medium">
-                                            PAPER 2025
+                                        <span class="px-2 py-0.5 text-[9px] font-mono rounded-full liquid-pill text-emerald-400 font-bold">
+                                            v1.1.0 • DESKTOP APP
                                         </span>
                                     </div>
-                                    <p class="text-[11px] text-slate-300 font-mono">Thai Speech Modeling • Acoustic Architecture</p>
+                                    <p class="text-[11px] text-slate-300 font-mono">Industrial Modbus RTU / TCP Desktop Utility</p>
                                 </div>
                             </div>
 
-                            <a href="#" class="p-2.5 rounded-2xl liquid-pill text-slate-300 group-hover:text-white group-hover:border-white/40 group-hover:bg-white/10 transition-all shrink-0" title="Read Paper">
-                                <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+                            <a href="https://github.com/ThanabordeeN" target="_blank" rel="noopener" class="w-8 h-8 rounded-full liquid-pill flex items-center justify-center text-slate-300 hover:text-white group-hover:text-white group-hover:border-white/40 group-hover:bg-white/10 transition-all shrink-0" title="View ModScan on GitHub">
+                                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
                             </a>
                         </div>
 
                         <p class="text-xs text-slate-300 font-normal leading-relaxed mb-4 relative z-10">
-                            การปรับแต่งระนาบวรรณยุกต์ภาษาไทยในโมเดลสังเคราะห์เสียงความหน่วงต่ำเพื่อความเป็นธรรมชาติสูงสุด.
+                            Desktop Application สำหรับงาน Industrial Modbus RTU/TCP: สแกนอุปกรณ์, Read/Write FC01–FC16, Real-time Dashboard Polling, แผนผัง RS-485 Topology และ CSV Logging (AGPL-3.0).
                         </p>
 
-                        <!-- Inset Benchmark Box -->
                         <div class="p-3.5 rounded-2xl liquid-inner space-y-2 relative z-10">
                             <div class="flex items-center justify-between text-[10px] font-mono">
                                 <span class="text-slate-200 font-semibold flex items-center gap-1.5">
-                                    <i data-lucide="zap" class="w-3.5 h-3.5 text-emerald-400"></i>
-                                    <span>Model Benchmark Results</span>
+                                    <i data-lucide="circuit-board" class="w-3.5 h-3.5 text-emerald-400"></i>
+                                    <span>Industrial Tooling Stack</span>
                                 </span>
-                                <span class="text-emerald-400 font-semibold">LATENCY: &lt;120ms</span>
+                                <span class="text-emerald-400 font-semibold">ELECTRON + SERIAL</span>
                             </div>
                             <div class="h-9 rounded-xl bg-black/70 border border-white/10 relative overflow-hidden flex items-center justify-between px-3 font-mono text-[10px]">
-                                <div class="text-slate-300 flex items-center gap-2">
-                                    <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i>
-                                    <span>Tone Accuracy: <strong class="text-white">98.4%</strong> • WaveGlow Fine-Tuning</span>
+                                <div class="text-slate-300 flex items-center gap-2 truncate">
+                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i>
+                                    <span class="truncate">Modbus RTU/TCP • RS-485 • FC01-16 • Electron • Tests</span>
                                 </div>
-                                <span class="px-2 py-0.5 rounded-md liquid-pill text-emerald-400 font-semibold text-[9px]">
-                                    OPTIMIZED
+                                <span class="px-2 py-0.5 rounded-md liquid-pill text-emerald-400 font-semibold text-[9px] shrink-0">
+                                    AGPL-3.0
                                 </span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- RESEARCH 2: AGENT EVALUATION -->
+                    <!-- WORK 3: DOROAD -->
                     <div class="liquid-card p-4 sm:p-5 relative group">
                         <div class="flex items-start justify-between gap-3 mb-3 relative z-10">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-2xl liquid-inner flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform shrink-0">
-                                    <i data-lucide="shield-check" class="w-4 h-4"></i>
+                                    <i data-lucide="map-pin" class="w-4 h-4"></i>
                                 </div>
                                 <div>
                                     <div class="flex items-center gap-2">
                                         <h3 class="font-display font-bold text-base text-white group-hover:text-emerald-400 transition-colors">
-                                            Hallucination Mitigation
+                                            DoRoad
                                         </h3>
                                         <span class="px-2 py-0.5 text-[9px] font-mono rounded-full liquid-pill text-emerald-400 font-medium">
-                                            PAPER 2024
+                                            RESEARCH / ML
                                         </span>
                                     </div>
-                                    <p class="text-[11px] text-slate-300 font-mono">Agent Evaluation • Enterprise RAG</p>
+                                    <p class="text-[11px] text-slate-300 font-mono">Multimodal Road-Condition Sensing</p>
                                 </div>
                             </div>
 
-                            <a href="#" class="p-2.5 rounded-2xl liquid-pill text-slate-300 group-hover:text-white group-hover:border-white/40 group-hover:bg-white/10 transition-all shrink-0" title="Read Paper">
-                                <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+                            <a href="https://github.com/ThanabordeeN/DoRoad-Flutter" target="_blank" rel="noopener" class="w-8 h-8 rounded-full liquid-pill flex items-center justify-center text-slate-300 hover:text-white group-hover:text-white group-hover:border-white/40 group-hover:bg-white/10 transition-all shrink-0" title="View DoRoad on GitHub">
+                                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
                             </a>
                         </div>
 
                         <p class="text-xs text-slate-300 font-normal leading-relaxed mb-4 relative z-10">
-                            เทคนิคการลดปัญหาข้อมูลคลาดเคลื่อนของ LLMs ในบริบทเอกสารและภาษาไทย.
+                            ระบบตรวจจับและวิเคราะห์สภาพผิวถนนแบบหลายมิติ (Multimodal Sensing) ด้วย Flutter Mobile App, Machine Learning และ Spatial Analytics.
                         </p>
 
-                        <!-- Inset Metric Box -->
                         <div class="p-3.5 rounded-2xl liquid-inner space-y-2 relative z-10">
                             <div class="flex items-center justify-between text-[10px] font-mono">
                                 <span class="text-slate-200 font-semibold flex items-center gap-1.5">
-                                    <i data-lucide="bar-chart-2" class="w-3.5 h-3.5 text-emerald-400"></i>
-                                    <span>Evaluation Metrics</span>
+                                    <i data-lucide="layers" class="w-3.5 h-3.5 text-emerald-400"></i>
+                                    <span>Core Components</span>
                                 </span>
-                                <span class="text-emerald-400 font-semibold">HALLUCINATION: -42%</span>
+                                <span class="text-emerald-400 font-semibold">FLUTTER + ML</span>
                             </div>
                             <div class="h-9 rounded-xl bg-black/70 border border-white/10 relative overflow-hidden flex items-center justify-between px-3 font-mono text-[10px]">
-                                <div class="text-slate-300 flex items-center gap-2">
-                                    <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i>
-                                    <span>Thai Legal & Tech Corpus • Self-Consistency</span>
+                                <div class="text-slate-300 flex items-center gap-2 truncate">
+                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i>
+                                    <span class="truncate">Flutter Mobile App • ML Model Inference • Spatial Map</span>
                                 </div>
-                                <span class="px-2 py-0.5 rounded-md liquid-pill text-emerald-400 font-semibold text-[9px]">
-                                    VALIDATED
+                                <span class="px-2 py-0.5 rounded-md liquid-pill text-emerald-400 font-semibold text-[9px] shrink-0">
+                                    OPEN REPO
                                 </span>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- SECTION 04: CONNECT & SOCIAL LINKS -->
+                <!-- SECTION 03: RESEARCH -->
+                <section class="space-y-4 mb-8">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+                        <span class="font-mono text-[10px] font-semibold text-emerald-400 tracking-widest uppercase flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                            03 / RESEARCH
+                        </span>
+                        <span class="text-[10px] font-mono text-slate-400">Publications & Projects</span>
+                    </div>
+
+                    <!-- PUBLISHED PAPER: IEEE HSI 2025 -->
+                    <div class="liquid-card p-4 sm:p-5 relative group">
+                        <div class="flex items-start justify-between gap-3 mb-3 relative z-10">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-2xl liquid-inner flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform shrink-0">
+                                    <i data-lucide="book-open" class="w-4 h-4"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-2 py-0.5 text-[9px] font-mono rounded-full liquid-pill text-emerald-400 font-bold">
+                                            IEEE HSI 2025
+                                        </span>
+                                        <span class="text-[9px] font-mono text-slate-400">CONFERENCE PAPER</span>
+                                    </div>
+                                    <h3 class="font-display font-bold text-sm sm:text-base text-white group-hover:text-emerald-400 transition-colors mt-1">
+                                        Evaluating OCR-Based Retrieval Performance in Thai Academic Literature
+                                    </h3>
+                                    <p class="text-[10px] text-slate-400 font-mono mt-0.5">
+                                        DOI: 10.1109/HSI66212.2025.11142409 • 17th International Conference on Human System Interaction
+                                    </p>
+                                </div>
+                            </div>
+
+                            <a href="https://doi.org/10.1109/HSI66212.2025.11142409" target="_blank" rel="noopener" class="w-8 h-8 rounded-full liquid-pill flex items-center justify-center text-slate-300 hover:text-white group-hover:text-white group-hover:border-white/40 group-hover:bg-white/10 transition-all shrink-0" title="View IEEE Publication">
+                                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+                            </a>
+                        </div>
+
+                        <p class="text-xs text-slate-300 font-normal leading-relaxed mb-4 relative z-10">
+                            การประเมินประสิทธิภาพของ OCR และ Vision-Language Models (VLMs) ในการดึงข้อมูลและค้นคืนสารสนเทศจากเอกสารวิชาการภาษาไทย.
+                        </p>
+
+                        <!-- Benchmark CER Inset Box -->
+                        <div class="p-3.5 rounded-2xl liquid-inner space-y-2 relative z-10">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-slate-200 font-semibold flex items-center gap-1.5">
+                                    <i data-lucide="bar-chart-2" class="w-3.5 h-3.5 text-emerald-400"></i>
+                                    <span>Character Error Rate (CER) Benchmark</span>
+                                </span>
+                                <span class="text-emerald-400 font-semibold">PEER-REVIEWED</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 font-mono text-[10px]">
+                                <div class="bg-black/70 border border-white/10 rounded-xl p-2 flex items-center justify-between">
+                                    <span class="text-slate-400">Gemini VLM</span>
+                                    <span class="text-emerald-400 font-bold">CER 15.5%</span>
+                                </div>
+                                <div class="bg-black/70 border border-white/10 rounded-xl p-2 flex items-center justify-between">
+                                    <span class="text-slate-400">Azure OCR</span>
+                                    <span class="text-slate-300 font-bold">CER 33.0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RESEARCH PROJECT: Agriculture AI Agent -->
+                    <div class="liquid-card p-4 sm:p-5 relative group">
+                        <div class="flex items-start justify-between gap-3 mb-3 relative z-10">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-2xl liquid-inner flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform shrink-0">
+                                    <i data-lucide="sprout" class="w-4 h-4"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <h3 class="font-display font-bold text-base text-white group-hover:text-emerald-400 transition-colors">
+                                            Multi-step AI Agent for Agricultural Technology
+                                        </h3>
+                                        <span class="px-2 py-0.5 text-[9px] font-mono rounded-full liquid-pill text-emerald-400 font-medium">
+                                            RESEARCH PROJECT
+                                        </span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-300 font-mono">LLM • DSPy • ReAct • Agricultural Automation</p>
+                                </div>
+                            </div>
+
+                            <a href="https://github.com/ThanabordeeN/AI-Agent-Farm-helpper" target="_blank" rel="noopener" class="w-8 h-8 rounded-full liquid-pill flex items-center justify-center text-slate-300 hover:text-white group-hover:text-white group-hover:border-white/40 group-hover:bg-white/10 transition-all shrink-0" title="View Repo on GitHub">
+                                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+                            </a>
+                        </div>
+
+                        <p class="text-xs text-slate-300 font-normal leading-relaxed mb-2 relative z-10">
+                            สถาปัตยกรรม Multi-Step Agent สำหรับวางแผน จัดการข้อมูลโทรมาตร และระบบตัดสินใจอัตโนมัติในงานเกษตรกรรมอัจฉริยะ.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- SECTION 04: TECHNICAL WRITING -->
+                <section class="space-y-4 mb-8">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+                        <span class="font-mono text-[10px] font-semibold text-emerald-400 tracking-widest uppercase flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                            04 / TECHNICAL WRITING
+                        </span>
+                        <span class="text-[10px] font-mono text-slate-400">Medium Articles</span>
+                    </div>
+
+                    <div class="space-y-3">
+                        <!-- ARTICLE 1 -->
+                        <a href="https://medium.com/@original2547/dspy-customize-react-agent-with-mcp-model-context-protocol-as-client-5f03dd6e1612" target="_blank" rel="noopener" class="liquid-card p-4 rounded-2xl block group hover:border-emerald-400/40 transition-all">
+                            <div class="flex items-center justify-between gap-2 mb-1.5 relative z-10">
+                                <span class="text-[9px] font-mono px-2 py-0.5 rounded-full liquid-pill text-emerald-400">
+                                    Apr 2025 • DSPy + MCP
+                                </span>
+                                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all"></i>
+                            </div>
+                            <h4 class="font-display font-bold text-xs sm:text-sm text-white group-hover:text-emerald-400 transition-colors relative z-10">
+                                DSPy (Customize) ReAct Agent With MCP (Model Context Protocol) as Client
+                            </h4>
+                            <p class="text-[11px] text-slate-300 font-mono mt-1 relative z-10">
+                                ปรับแต่ง DSPy เพื่อเชื่อม ReAct Agent เข้ากับ MCP Server พร้อมโค้ด implementation ตัวอย่าง
+                            </p>
+                        </a>
+
+                        <!-- ARTICLE 2 -->
+                        <a href="https://medium.com/@original2547/creating-a-react-agent-from-scratch-using-openai-no-frameworks-required-111910f887f8" target="_blank" rel="noopener" class="liquid-card p-4 rounded-2xl block group hover:border-emerald-400/40 transition-all">
+                            <div class="flex items-center justify-between gap-2 mb-1.5 relative z-10">
+                                <span class="text-[9px] font-mono px-2 py-0.5 rounded-full liquid-pill text-emerald-400">
+                                    AI Agent Fundamentals
+                                </span>
+                                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all"></i>
+                            </div>
+                            <h4 class="font-display font-bold text-xs sm:text-sm text-white group-hover:text-emerald-400 transition-colors relative z-10">
+                                Creating a ReAct Agent from Scratch Using OpenAI: No Frameworks Required
+                            </h4>
+                            <p class="text-[11px] text-slate-300 font-mono mt-1 relative z-10">
+                                สร้าง ReAct Agent จากศูนย์โดยไม่อาศัย Framework เพื่อเข้าใจกลไกและแก่นแท้ของ Agent
+                            </p>
+                        </a>
+
+                        <!-- ARTICLE 3 -->
+                        <a href="https://medium.com/@original2547/private-llms-scaling-made-easy-95cdc93e381b" target="_blank" rel="noopener" class="liquid-card p-4 rounded-2xl block group hover:border-emerald-400/40 transition-all">
+                            <div class="flex items-center justify-between gap-2 mb-1.5 relative z-10">
+                                <span class="text-[9px] font-mono px-2 py-0.5 rounded-full liquid-pill text-emerald-400">
+                                    LLM Infrastructure
+                                </span>
+                                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all"></i>
+                            </div>
+                            <h4 class="font-display font-bold text-xs sm:text-sm text-white group-hover:text-emerald-400 transition-colors relative z-10">
+                                Private LLMs Scaling Made Easy
+                            </h4>
+                            <p class="text-[11px] text-slate-300 font-mono mt-1 relative z-10">
+                                OpenThaiGPT → Hugging Face → vLLM → RunPod สู่การ Scaling โมเดลสำหรับ Enterprise
+                            </p>
+                        </a>
+
+                        <!-- ARTICLE 4 -->
+                        <a href="https://medium.com/@original2547/dont-use-langchain-if-you-don-t-understand-llms-1eb64dd5ec15" target="_blank" rel="noopener" class="liquid-card p-4 rounded-2xl block group hover:border-emerald-400/40 transition-all">
+                            <div class="flex items-center justify-between gap-2 mb-1.5 relative z-10">
+                                <span class="text-[9px] font-mono px-2 py-0.5 rounded-full liquid-pill text-emerald-400">
+                                    AI Engineering
+                                </span>
+                                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all"></i>
+                            </div>
+                            <h4 class="font-display font-bold text-xs sm:text-sm text-white group-hover:text-emerald-400 transition-colors relative z-10">
+                                Don't Use LangChain If You Don't Understand LLMs
+                            </h4>
+                            <p class="text-[11px] text-slate-300 font-mono mt-1 relative z-10">
+                                ทำไมการเข้าใจพื้นฐาน LLM จึงสำคัญกว่าการพึ่งพา Abstraction Framework
+                            </p>
+                        </a>
+                    </div>
+
+                    <a href="https://medium.com/@original2547" target="_blank" rel="noopener" class="liquid-pill w-full py-2.5 rounded-2xl text-slate-200 hover:text-white font-mono text-xs flex items-center justify-center gap-2 group transition-all">
+                        <span class="relative z-10 font-bold">VIEW ALL ARTICLES ON MEDIUM</span>
+                        <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-emerald-400 group-hover:translate-x-1 transition-transform relative z-10"></i>
+                    </a>
+                </section>
+
+                <!-- SECTION 05: TRAINING & WORKSHOPS -->
+                <section class="space-y-4 mb-8">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+                        <span class="font-mono text-[10px] font-semibold text-emerald-400 tracking-widest uppercase flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                            05 / TRAINING & WORKSHOPS
+                        </span>
+                        <span class="text-[10px] font-mono text-slate-400">Curriculum</span>
+                    </div>
+
+                    <div onclick="openBookingDrawer('AI Training & Workshops')" class="liquid-card p-4 sm:p-5 relative group cursor-pointer">
+                        <div class="flex items-start justify-between gap-3 mb-3 relative z-10">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-2xl liquid-inner flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform shrink-0">
+                                    <i data-lucide="graduation-cap" class="w-4 h-4"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <h3 class="font-display font-bold text-base text-white group-hover:text-emerald-400 transition-colors">
+                                            AI Training & Workshops
+                                        </h3>
+                                        <span class="px-2 py-0.5 text-[9px] font-mono rounded-full liquid-pill text-emerald-400 font-medium">
+                                            HANDS-ON
+                                        </span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-300 font-mono">AI Agents • LLM Applications • Automation</p>
+                                </div>
+                            </div>
+
+                            <div class="w-8 h-8 rounded-full liquid-pill flex items-center justify-center text-slate-300 group-hover:text-white group-hover:border-white/40 group-hover:bg-white/10 transition-all shrink-0" title="Book Workshop">
+                                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-slate-300 font-normal leading-relaxed mb-4 relative z-10">
+                            หลักสูตรเวิร์กชอปที่เน้นการลงมือสร้างระบบจริง (Hands-on) พัฒนาต้นแบบและ Workflow สำหรับทีมวิศวกรและองค์กร.
+                        </p>
+
+                        <div class="p-3.5 rounded-2xl liquid-inner space-y-2 relative z-10">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-slate-200 font-semibold flex items-center gap-1.5">
+                                    <i data-lucide="users" class="w-3.5 h-3.5 text-emerald-400"></i>
+                                    <span>Practical Labs</span>
+                                </span>
+                                <span class="text-emerald-400 font-semibold">CUSTOM CURRICULUM</span>
+                            </div>
+                            <div class="h-9 rounded-xl bg-black/70 border border-white/10 relative overflow-hidden flex items-center justify-between px-3 font-mono text-[10px]">
+                                <div class="text-slate-300 flex items-center gap-2 truncate">
+                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i>
+                                    <span class="truncate">DSPy, MCP, Fast RAG, Multi-Agent & Deployment</span>
+                                </div>
+                                <span class="px-2 py-0.5 rounded-md liquid-pill text-emerald-400 font-semibold text-[9px] shrink-0">
+                                    AVAILABLE
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 06: CONNECT & SOCIAL LINKS -->
                 <section class="space-y-4 mb-6">
                     <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
                         <span class="font-mono text-[10px] font-semibold text-emerald-400 tracking-widest uppercase flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                            04 / CONNECT & SOCIAL
+                            06 / CONNECT & SOCIAL
                         </span>
                         <span class="text-[10px] font-mono text-slate-400">Links</span>
                     </div>
 
-                    <div class="grid grid-cols-3 gap-3">
-                        <a href="https://github.com" target="_blank" rel="noopener" class="liquid-card p-3.5 sm:p-4 rounded-[24px] flex flex-col items-center justify-center gap-2 text-slate-300 hover:text-white transition-all active:scale-95 group">
-                            <div class="w-10 h-10 rounded-2xl liquid-inner flex items-center justify-center text-emerald-400 group-hover:scale-110 group-hover:text-emerald-300 transition-transform relative z-10">
-                                <i data-lucide="github" class="w-4 h-4"></i>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                        <!-- GITHUB -->
+                        <a id="link-github" href="https://github.com/ThanabordeeN" target="_blank" rel="noopener" class="liquid-card p-3 rounded-[22px] flex flex-col items-center justify-center gap-1.5 text-slate-300 hover:text-white transition-all active:scale-95 group">
+                            <div class="w-9 h-9 rounded-2xl liquid-inner flex items-center justify-center text-emerald-400 group-hover:scale-110 group-hover:text-emerald-300 transition-transform relative z-10">
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                                </svg>
                             </div>
                             <div class="text-center relative z-10">
                                 <span class="text-xs font-display font-bold text-white group-hover:text-emerald-400 transition-colors block">GitHub</span>
-                                <span class="text-[9px] font-mono text-slate-400 group-hover:text-slate-300 transition-colors">@thanabodee</span>
+                                <span class="text-[9px] font-mono text-slate-400 group-hover:text-slate-300 transition-colors">@ThanabordeeN</span>
                             </div>
                         </a>
 
-                        <a href="https://linkedin.com" target="_blank" rel="noopener" class="liquid-card p-3.5 sm:p-4 rounded-[24px] flex flex-col items-center justify-center gap-2 text-slate-300 hover:text-white transition-all active:scale-95 group">
-                            <div class="w-10 h-10 rounded-2xl liquid-inner flex items-center justify-center text-emerald-400 group-hover:scale-110 group-hover:text-emerald-300 transition-transform relative z-10">
-                                <i data-lucide="linkedin" class="w-4 h-4"></i>
+                        <!-- LINKEDIN -->
+                        <a id="link-linkedin" href="https://th.linkedin.com/in/thanabordee-nammungkhun" target="_blank" rel="noopener" class="liquid-card p-3 rounded-[22px] flex flex-col items-center justify-center gap-1.5 text-slate-300 hover:text-white transition-all active:scale-95 group">
+                            <div class="w-9 h-9 rounded-2xl liquid-inner flex items-center justify-center text-emerald-400 group-hover:scale-110 group-hover:text-emerald-300 transition-transform relative z-10">
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                                </svg>
                             </div>
                             <div class="text-center relative z-10">
                                 <span class="text-xs font-display font-bold text-white group-hover:text-emerald-400 transition-colors block">LinkedIn</span>
@@ -771,13 +907,68 @@
                             </div>
                         </a>
 
-                        <a href="mailto:contact@nounxlab.com" class="liquid-card p-3.5 sm:p-4 rounded-[24px] flex flex-col items-center justify-center gap-2 text-slate-300 hover:text-white transition-all active:scale-95 group">
-                            <div class="w-10 h-10 rounded-2xl liquid-inner flex items-center justify-center text-emerald-400 group-hover:scale-110 group-hover:text-emerald-300 transition-transform relative z-10">
-                                <i data-lucide="mail" class="w-4 h-4"></i>
+                        <!-- FACEBOOK -->
+                        <a id="link-facebook" href="https://web.facebook.com/thanabordee.n.noun" target="_blank" rel="noopener" class="liquid-card p-3 rounded-[22px] flex flex-col items-center justify-center gap-1.5 text-slate-300 hover:text-white transition-all active:scale-95 group">
+                            <div class="w-9 h-9 rounded-2xl liquid-inner flex items-center justify-center text-emerald-400 group-hover:scale-110 group-hover:text-emerald-300 transition-transform relative z-10">
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                </svg>
+                            </div>
+                            <div class="text-center relative z-10">
+                                <span class="text-xs font-display font-bold text-white group-hover:text-emerald-400 transition-colors block">Facebook</span>
+                                <span class="text-[9px] font-mono text-slate-400 group-hover:text-slate-300 transition-colors">thanabordee.n</span>
+                            </div>
+                        </a>
+
+                        <!-- TIKTOK -->
+                        <a id="link-tiktok" href="https://www.tiktok.com/@cheus_n" target="_blank" rel="noopener" class="liquid-card p-3 rounded-[22px] flex flex-col items-center justify-center gap-1.5 text-slate-300 hover:text-white transition-all active:scale-95 group">
+                            <div class="w-9 h-9 rounded-2xl liquid-inner flex items-center justify-center text-emerald-400 group-hover:scale-110 group-hover:text-emerald-300 transition-transform relative z-10">
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                                    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.24 1.07-.14 1.61.24 1.64 1.82 2.89 3.5 2.75 1.44-.04 2.71-.97 3.11-2.35.15-.55.2-1.12.2-1.69V.02z"/>
+                                </svg>
+                            </div>
+                            <div class="text-center relative z-10">
+                                <span class="text-xs font-display font-bold text-white group-hover:text-emerald-400 transition-colors block">TikTok</span>
+                                <span class="text-[9px] font-mono text-slate-400 group-hover:text-slate-300 transition-colors">@cheus_n</span>
+                            </div>
+                        </a>
+
+                        <!-- MEDIUM -->
+                        <a id="link-medium" href="https://medium.com/@original2547" target="_blank" rel="noopener" class="liquid-card p-3 rounded-[22px] flex flex-col items-center justify-center gap-1.5 text-slate-300 hover:text-white transition-all active:scale-95 group">
+                            <div class="w-9 h-9 rounded-2xl liquid-inner flex items-center justify-center text-emerald-400 group-hover:scale-110 group-hover:text-emerald-300 transition-transform relative z-10">
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                                    <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/>
+                                </svg>
+                            </div>
+                            <div class="text-center relative z-10">
+                                <span class="text-xs font-display font-bold text-white group-hover:text-emerald-400 transition-colors block">Medium</span>
+                                <span class="text-[9px] font-mono text-slate-400 group-hover:text-slate-300 transition-colors">@original2547</span>
+                            </div>
+                        </a>
+
+                        <!-- WEBSITE -->
+                        <a id="link-website" href="https://nounxlab.com" target="_blank" rel="noopener" class="liquid-card p-3 rounded-[22px] flex flex-col items-center justify-center gap-1.5 text-slate-300 hover:text-white transition-all active:scale-95 group">
+                            <div class="w-9 h-9 rounded-2xl liquid-inner flex items-center justify-center text-emerald-400 group-hover:scale-110 group-hover:text-emerald-300 transition-transform relative z-10">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>
+                                </svg>
+                            </div>
+                            <div class="text-center relative z-10">
+                                <span class="text-xs font-display font-bold text-white group-hover:text-emerald-400 transition-colors block">Website</span>
+                                <span class="text-[9px] font-mono text-slate-400 group-hover:text-slate-300 transition-colors">nounxlab.com</span>
+                            </div>
+                        </a>
+
+                        <!-- EMAIL -->
+                        <a id="link-email" href="mailto:thanabordee.noun@gmail.com" class="liquid-card p-3 rounded-[22px] flex flex-col items-center justify-center gap-1.5 text-slate-300 hover:text-white transition-all active:scale-95 group col-span-2 sm:col-span-3 lg:col-span-1">
+                            <div class="w-9 h-9 rounded-2xl liquid-inner flex items-center justify-center text-emerald-400 group-hover:scale-110 group-hover:text-emerald-300 transition-transform relative z-10">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                                </svg>
                             </div>
                             <div class="text-center relative z-10">
                                 <span class="text-xs font-display font-bold text-white group-hover:text-emerald-400 transition-colors block">Email</span>
-                                <span class="text-[9px] font-mono text-slate-400 group-hover:text-slate-300 transition-colors">Direct Contact</span>
+                                <span class="text-[9px] font-mono text-slate-400 group-hover:text-slate-300 transition-colors">thanabordee.noun</span>
                             </div>
                         </a>
                     </div>
@@ -803,7 +994,7 @@
     <div id="booking-drawer" class="fixed inset-0 z-50 pointer-events-none opacity-0 transition-opacity duration-300 flex items-end sm:items-center justify-center p-0 sm:p-4">
         <div onclick="closeBookingDrawer()" class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity"></div>
         
-        <div class="relative w-full max-w-lg liquid-card bg-[#080B10]/40 backdrop-blur-md text-slate-100 rounded-t-[40px] sm:rounded-[44px] p-6 sm:p-7 shadow-2xl z-10 transition-transform duration-300 translate-y-full sm:translate-y-0 max-h-[90vh] overflow-y-auto border border-white/30">
+        <div class="relative w-full max-w-lg liquid-card text-slate-100 rounded-t-[40px] sm:rounded-[44px] p-6 sm:p-7 shadow-2xl z-10 transition-transform duration-300 translate-y-full sm:translate-y-0 max-h-[90vh] overflow-y-auto">
             <!-- Modal Header -->
             <div class="flex items-center justify-between mb-5 border-b border-white/15 pb-4 relative z-10">
                 <div class="flex items-center gap-3">
@@ -873,7 +1064,7 @@
     <!-- SHARE MODAL (iPhone Alert Curvature) -->
     <div id="share-modal" class="fixed inset-0 z-50 pointer-events-none opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
         <div onclick="closeShareModal()" class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity"></div>
-        <div class="relative w-full max-w-xs liquid-card bg-[#080B10]/40 backdrop-blur-md rounded-[36px] p-6 text-center z-10 shadow-2xl border border-white/30 group">
+        <div class="relative w-full max-w-xs liquid-card rounded-[36px] p-6 text-center z-10 shadow-2xl group">
             <button onclick="closeShareModal()" class="absolute top-3.5 right-3.5 p-1.5 rounded-full liquid-pill text-slate-300 hover:text-white group cursor-pointer active:scale-95 transition-all">
                 <i data-lucide="x" class="w-4 h-4 relative z-10 group-hover:scale-110 group-hover:text-emerald-400 transition-all"></i>
             </button>
@@ -910,6 +1101,9 @@
         // ==========================================
         let renderer, scene, camera, material, mesh;
         let fallbackTexture, videoTexture;
+        let videoStream = null;
+        let isCameraActive = false;
+        let currentFacingMode = 'environment';
 
         const vertexShader = `
             varying vec2 vUv;
@@ -981,12 +1175,11 @@
 
             function renderLoop() {
                 requestAnimationFrame(renderLoop);
-                renderer.render(scene, camera);
+                if (isCameraActive) {
+                    renderer.render(scene, camera);
+                }
             }
             renderLoop();
-
-            // Auto-start webcam
-            initCamera();
         }
 
         function onWindowResize() {
@@ -1002,17 +1195,15 @@
         initWebGLScene();
 
         // ==========================================
-        // 2. REALTIME CAMERA FEED INTO WEBGL TEXTURE
+        // 2. REALTIME CAMERA FEED INTO WEBGL TEXTURE (ON DEMAND)
         // ==========================================
-        let videoStream = null;
-        let isCameraActive = false;
-        let currentFacingMode = 'environment';
 
         async function initCamera() {
             const video = document.getElementById('webcam-video');
             const statusLabel = document.getElementById('cam-status-label');
             const indicator = document.getElementById('cam-indicator');
             const flipBtn = document.getElementById('cam-flip-btn');
+            const webglCanvas = document.getElementById('webgl-canvas');
 
             try {
                 videoStream = await navigator.mediaDevices.getUserMedia({
@@ -1039,27 +1230,45 @@
                     }
 
                     isCameraActive = true;
-                    if (statusLabel) statusLabel.textContent = 'CAM: LIVE';
+                    if (webglCanvas) {
+                        webglCanvas.classList.remove('opacity-0');
+                        webglCanvas.classList.add('opacity-100');
+                    }
+                    if (statusLabel) {
+                        statusLabel.textContent = 'CAM: LIVE';
+                        statusLabel.className = 'relative z-10 font-mono text-[11px] text-emerald-400 group-hover:text-emerald-300 transition-colors';
+                    }
                     if (indicator) indicator.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse relative z-10 group-hover:scale-125 group-hover:shadow-[0_0_8px_#10B981] transition-all';
                     if (flipBtn) flipBtn.classList.remove('hidden');
                     showToast("Live Camera Active (" + (currentFacingMode === 'environment' ? "Rear" : "Front") + ")");
                 }
             } catch (err) {
                 isCameraActive = false;
+                if (webglCanvas) {
+                    webglCanvas.classList.remove('opacity-100');
+                    webglCanvas.classList.add('opacity-0');
+                }
                 if (material && fallbackTexture) {
                     material.uniforms.uTexture.value = fallbackTexture;
                     if (fallbackTexture.image) {
                         material.uniforms.uTexRes.value.set(fallbackTexture.image.width || 1920, fallbackTexture.image.height || 1080);
                     }
                 }
-                if (statusLabel) statusLabel.textContent = 'CAM: OFF';
+                if (statusLabel) {
+                    statusLabel.textContent = 'CAM: OFF';
+                    statusLabel.className = 'relative z-10 font-mono text-[11px] text-slate-300 group-hover:text-white transition-colors';
+                }
                 if (indicator) indicator.className = 'w-1.5 h-1.5 rounded-full bg-slate-500 relative z-10 group-hover:scale-125 transition-all';
+                showToast("Cannot access camera (Background Wallpaper active)");
             }
         }
 
         function toggleCamera() {
             const video = document.getElementById('webcam-video');
             const flipBtn = document.getElementById('cam-flip-btn');
+            const statusLabel = document.getElementById('cam-status-label');
+            const indicator = document.getElementById('cam-indicator');
+            const webglCanvas = document.getElementById('webgl-canvas');
 
             if (isCameraActive && videoStream) {
                 videoStream.getTracks().forEach(track => track.stop());
@@ -1070,6 +1279,11 @@
                     video.srcObject = null;
                 }
 
+                if (webglCanvas) {
+                    webglCanvas.classList.remove('opacity-100');
+                    webglCanvas.classList.add('opacity-0');
+                }
+
                 if (material && fallbackTexture) {
                     material.uniforms.uTexture.value = fallbackTexture;
                     if (fallbackTexture.image) {
@@ -1077,10 +1291,13 @@
                     }
                 }
 
-                document.getElementById('cam-status-label').textContent = 'CAM: OFF';
-                document.getElementById('cam-indicator').className = 'w-1.5 h-1.5 rounded-full bg-slate-500 relative z-10 group-hover:scale-125 transition-all';
+                if (statusLabel) {
+                    statusLabel.textContent = 'CAM: OFF';
+                    statusLabel.className = 'relative z-10 font-mono text-[11px] text-slate-300 group-hover:text-white transition-colors';
+                }
+                if (indicator) indicator.className = 'w-1.5 h-1.5 rounded-full bg-slate-500 relative z-10 group-hover:scale-125 transition-all';
                 if (flipBtn) flipBtn.classList.add('hidden');
-                showToast("Camera disabled (Fallback Wallpaper active)");
+                showToast("Camera disabled (Background Wallpaper active)");
             } else {
                 initCamera();
             }
@@ -1095,109 +1312,9 @@
             await initCamera();
         }
 
-        // Auto-request camera on first user interaction if browser policy blocked automatic media start
-        const triggerAutoCamera = () => {
-            if (!isCameraActive && !videoStream) {
-                initCamera();
-            }
-        };
-        window.addEventListener('touchstart', triggerAutoCamera, { once: true, passive: true });
-        window.addEventListener('click', triggerAutoCamera, { once: true });
 
         // ==========================================
-        // 3. AUDIO SYNTHESIZER FOR VOICE TWO
-        // ==========================================
-        let isSynthesizing = false;
-        let audioContext = null;
-        let oscillator = null;
-        let animFrameId = null;
-        const canvas = document.getElementById('waveform-canvas');
-        const ctx = canvas ? canvas.getContext('2d') : null;
-
-        function resizeCanvas() {
-            if (!canvas) return;
-            canvas.width = canvas.parentElement.clientWidth;
-            canvas.height = canvas.parentElement.clientHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        function drawWaveform() {
-            if (!ctx || !canvas) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            const bars = 20;
-            const barWidth = canvas.width / bars;
-            const statusText = document.getElementById('synth-status-text');
-
-            if (isSynthesizing) {
-                if (statusText) statusText.style.display = 'none';
-                for (let i = 0; i < bars; i++) {
-                    const height = Math.random() * (canvas.height - 4) + 4;
-                    const x = i * barWidth;
-                    const y = (canvas.height - height) / 2;
-
-                    ctx.fillStyle = '#10B981';
-                    ctx.fillRect(x + 1, y, barWidth - 2, height);
-                }
-                animFrameId = requestAnimationFrame(drawWaveform);
-            } else {
-                if (statusText) statusText.style.display = 'flex';
-            }
-        }
-
-        function updateVoicePitch() {
-            if (isSynthesizing) toggleThaiAudioSynth();
-        }
-
-        function toggleThaiAudioSynth() {
-            const playIcon = document.getElementById('synth-icon-play');
-            const stopIcon = document.getElementById('synth-icon-stop');
-            const label = document.getElementById('synth-btn-label');
-            const preset = document.getElementById('voice-preset').value;
-
-            isSynthesizing = !isSynthesizing;
-
-            if (isSynthesizing) {
-                playIcon.classList.add('hidden');
-                stopIcon.classList.remove('hidden');
-                label.textContent = "STOP";
-                drawWaveform();
-
-                try {
-                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    oscillator = audioContext.createOscillator();
-                    const gain = audioContext.createGain();
-
-                    const freqMap = { 'thai-male': 220, 'thai-female': 440, 'narrator': 320 };
-
-                    oscillator.type = 'sine';
-                    oscillator.frequency.setValueAtTime(freqMap[preset] || 280, audioContext.currentTime);
-                    oscillator.frequency.exponentialRampToValueAtTime((freqMap[preset] || 280) * 1.3, audioContext.currentTime + 1.2);
-
-                    gain.gain.setValueAtTime(0.04, audioContext.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 1.4);
-
-                    oscillator.connect(gain);
-                    gain.connect(audioContext.destination);
-
-                    oscillator.start();
-                    oscillator.stop(audioContext.currentTime + 1.4);
-
-                    setTimeout(() => { if (isSynthesizing) toggleThaiAudioSynth(); }, 1600);
-                } catch(e) {}
-            } else {
-                playIcon.classList.remove('hidden');
-                stopIcon.classList.add('hidden');
-                label.textContent = "TEST VOICE";
-                if (animFrameId) cancelAnimationFrame(animFrameId);
-                if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
-                drawWaveform();
-            }
-        }
-
-        // ==========================================
-        // 4. DRAWER & MODAL CONTROLS
+        // 3. DRAWER & MODAL CONTROLS
         // ==========================================
         function openBookingDrawer(selectedService = null) {
             const drawer = document.getElementById('booking-drawer');
@@ -1261,16 +1378,29 @@
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
 
+            const targetEmail = "thanabordee.noun@gmail.com";
+            const subject = encodeURIComponent(`[LinkNoW] Inquiry: ${data.service || 'General Project'} - ${data.organization || 'Inquiry'}`);
+            const body = encodeURIComponent(
+                `องค์กร / บริษัท (Organization): ${data.organization || '-'}\n` +
+                `อีเมลติดต่อกลับ (Contact Email): ${data.email || '-'}\n` +
+                `ประเภทบริการ (Service Type): ${data.service || '-'}\n\n` +
+                `รายละเอียดงาน (Project Details):\n${data.details || '-'}\n\n` +
+                `---\nส่งผ่าน LinkNoW Hub`
+            );
+
             try {
                 await fetch('/api/contact', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({ ...data, recipient: targetEmail })
                 });
             } catch (err) {}
 
+            // Open user's email client to send drafted email directly
+            window.open(`mailto:${targetEmail}?subject=${subject}&body=${body}`, '_blank');
+
             closeBookingDrawer();
-            showToast("ส่งข้อมูลเรียบร้อยแล้ว!");
+            showToast("เปิดอีเมลพร้อมส่งไปที่ thanabordee.noun@gmail.com แล้ว!");
             form.reset();
         }
     </script>
