@@ -69,6 +69,12 @@
             object-fit: cover;
             position: absolute;
             inset: 0;
+            transition: filter 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease-in-out;
+        }
+
+        #bg-image.frozen-blur {
+            filter: blur(28px) brightness(0.75) saturate(140%);
+            transform: scale(1.1);
         }
 
         #webgl-canvas {
@@ -297,8 +303,14 @@
     <!-- Hidden Canvas for Freezing Video Frame upon Camera Off -->
     <canvas id="freeze-canvas" class="hidden"></canvas>
 
-    <!-- TOP FLOATING UTILITY CONTROLS -->
-    <header class="fixed top-4 right-4 z-40 flex items-center gap-2">
+    <!-- TOP FLOATING UTILITY CONTROLS (AUTO-HIDE ON SCROLL DOWN) -->
+    <header id="floating-header" class="fixed top-4 right-4 z-40 flex items-center gap-2 transition-all duration-300 ease-out transform">
+        <!-- Camera Stop & Freeze Frame Button (Visible when CAM is LIVE) -->
+        <button onclick="stopAndFreezeCamera()" id="cam-stop-btn" class="hidden px-2.5 py-1.5 rounded-full liquid-pill text-amber-400 hover:text-amber-300 hover:border-amber-400/50 active:scale-95 transition-all group cursor-pointer flex items-center gap-1.5 select-none shadow-lg" title="Freeze frame as blurred background">
+            <i data-lucide="pause" class="w-3.5 h-3.5 relative z-10 group-hover:scale-110 transition-transform"></i>
+            <span class="text-[10px] font-mono font-bold relative z-10">STOP</span>
+        </button>
+
         <!-- Camera Flip Button (Front / Rear Toggle) -->
         <button onclick="flipCameraFacing()" id="cam-flip-btn" class="hidden p-2 rounded-full liquid-pill text-slate-300 hover:text-white active:scale-95 transition-all group cursor-pointer" title="Flip Camera">
             <i data-lucide="refresh-cw" class="w-3.5 h-3.5 relative z-10 group-hover:rotate-180 group-hover:text-emerald-400 transition-all duration-300"></i>
@@ -1103,6 +1115,7 @@
         let fallbackTexture, videoTexture;
         let videoStream = null;
         let isCameraActive = false;
+        let isFrozen = false;
         let currentFacingMode = 'environment';
 
         const vertexShader = `
@@ -1195,17 +1208,25 @@
         initWebGLScene();
 
         // ==========================================
-        // 2. REALTIME CAMERA FEED INTO WEBGL TEXTURE (ON DEMAND)
+        // 2. REALTIME CAMERA & FREEZE BLUR PIPELINE
         // ==========================================
 
         async function initCamera() {
             const video = document.getElementById('webcam-video');
             const statusLabel = document.getElementById('cam-status-label');
             const indicator = document.getElementById('cam-indicator');
+            const stopBtn = document.getElementById('cam-stop-btn');
             const flipBtn = document.getElementById('cam-flip-btn');
             const webglCanvas = document.getElementById('webgl-canvas');
+            const bgImage = document.getElementById('bg-image');
 
             try {
+                // Clear previous frozen blur effect if present
+                if (bgImage) {
+                    bgImage.classList.remove('frozen-blur');
+                }
+                isFrozen = false;
+
                 videoStream = await navigator.mediaDevices.getUserMedia({
                     video: { 
                         facingMode: { ideal: currentFacingMode },
@@ -1239,68 +1260,129 @@
                         statusLabel.className = 'relative z-10 font-mono text-[11px] text-emerald-400 group-hover:text-emerald-300 transition-colors';
                     }
                     if (indicator) indicator.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse relative z-10 group-hover:scale-125 group-hover:shadow-[0_0_8px_#10B981] transition-all';
+                    if (stopBtn) stopBtn.classList.remove('hidden');
                     if (flipBtn) flipBtn.classList.remove('hidden');
                     showToast("Live Camera Active (" + (currentFacingMode === 'environment' ? "Rear" : "Front") + ")");
                 }
             } catch (err) {
-                isCameraActive = false;
-                if (webglCanvas) {
-                    webglCanvas.classList.remove('opacity-100');
-                    webglCanvas.classList.add('opacity-0');
-                }
-                if (material && fallbackTexture) {
-                    material.uniforms.uTexture.value = fallbackTexture;
-                    if (fallbackTexture.image) {
-                        material.uniforms.uTexRes.value.set(fallbackTexture.image.width || 1920, fallbackTexture.image.height || 1080);
-                    }
-                }
-                if (statusLabel) {
-                    statusLabel.textContent = 'CAM: OFF';
-                    statusLabel.className = 'relative z-10 font-mono text-[11px] text-slate-300 group-hover:text-white transition-colors';
-                }
-                if (indicator) indicator.className = 'w-1.5 h-1.5 rounded-full bg-slate-500 relative z-10 group-hover:scale-125 transition-all';
+                resetToDefaultWallpaper();
                 showToast("Cannot access camera (Background Wallpaper active)");
             }
         }
 
-        function toggleCamera() {
+        function stopAndFreezeCamera() {
             const video = document.getElementById('webcam-video');
+            const freezeCanvas = document.getElementById('freeze-canvas');
+            const bgImage = document.getElementById('bg-image');
+            const webglCanvas = document.getElementById('webgl-canvas');
+            const stopBtn = document.getElementById('cam-stop-btn');
             const flipBtn = document.getElementById('cam-flip-btn');
             const statusLabel = document.getElementById('cam-status-label');
             const indicator = document.getElementById('cam-indicator');
-            const webglCanvas = document.getElementById('webgl-canvas');
 
-            if (isCameraActive && videoStream) {
+            if (!video || !videoStream || !isCameraActive) return;
+
+            try {
+                // Capture current video frame into canvas
+                const width = video.videoWidth || window.innerWidth;
+                const height = video.videoHeight || window.innerHeight;
+                freezeCanvas.width = width;
+                freezeCanvas.height = height;
+                const ctx = freezeCanvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, width, height);
+
+                const frameDataUrl = freezeCanvas.toDataURL('image/jpeg', 0.92);
+
+                // Stop hardware stream
                 videoStream.getTracks().forEach(track => track.stop());
                 videoStream = null;
                 isCameraActive = false;
+                isFrozen = true;
+                video.srcObject = null;
 
-                if (video) {
-                    video.srcObject = null;
+                // Set frozen frame with blur on background image
+                if (bgImage) {
+                    bgImage.src = frameDataUrl;
+                    bgImage.classList.add('frozen-blur');
                 }
 
+                // Hide WebGL canvas to reveal smooth blurred background
                 if (webglCanvas) {
                     webglCanvas.classList.remove('opacity-100');
                     webglCanvas.classList.add('opacity-0');
                 }
 
-                if (material && fallbackTexture) {
-                    material.uniforms.uTexture.value = fallbackTexture;
-                    if (fallbackTexture.image) {
-                        material.uniforms.uTexRes.value.set(fallbackTexture.image.width || 1920, fallbackTexture.image.height || 1080);
-                    }
+                // Update UI state & button visibility
+                if (stopBtn) stopBtn.classList.add('hidden');
+                if (flipBtn) flipBtn.classList.add('hidden');
+                if (statusLabel) {
+                    statusLabel.textContent = 'CAM: FROZEN';
+                    statusLabel.className = 'relative z-10 font-mono text-[11px] text-amber-400 group-hover:text-amber-300 transition-colors';
+                }
+                if (indicator) {
+                    indicator.className = 'w-1.5 h-1.5 rounded-full bg-amber-400 relative z-10 group-hover:scale-125 transition-all';
                 }
 
-                if (statusLabel) {
-                    statusLabel.textContent = 'CAM: OFF';
-                    statusLabel.className = 'relative z-10 font-mono text-[11px] text-slate-300 group-hover:text-white transition-colors';
-                }
-                if (indicator) indicator.className = 'w-1.5 h-1.5 rounded-full bg-slate-500 relative z-10 group-hover:scale-125 transition-all';
-                if (flipBtn) flipBtn.classList.add('hidden');
-                showToast("Camera disabled (Background Wallpaper active)");
+                showToast("Frame frozen & blurred as background");
+            } catch (err) {
+                console.error("Failed to freeze camera frame:", err);
+                resetToDefaultWallpaper();
+            }
+        }
+
+        function toggleCamera() {
+            if (isCameraActive) {
+                resetToDefaultWallpaper();
             } else {
                 initCamera();
             }
+        }
+
+        function resetToDefaultWallpaper() {
+            const video = document.getElementById('webcam-video');
+            const stopBtn = document.getElementById('cam-stop-btn');
+            const flipBtn = document.getElementById('cam-flip-btn');
+            const statusLabel = document.getElementById('cam-status-label');
+            const indicator = document.getElementById('cam-indicator');
+            const webglCanvas = document.getElementById('webgl-canvas');
+            const bgImage = document.getElementById('bg-image');
+
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+                videoStream = null;
+            }
+            isCameraActive = false;
+            isFrozen = false;
+
+            if (video) {
+                video.srcObject = null;
+            }
+
+            if (webglCanvas) {
+                webglCanvas.classList.remove('opacity-100');
+                webglCanvas.classList.add('opacity-0');
+            }
+
+            if (bgImage) {
+                bgImage.src = '/images/background.jpg';
+                bgImage.classList.remove('frozen-blur');
+            }
+
+            if (material && fallbackTexture) {
+                material.uniforms.uTexture.value = fallbackTexture;
+                if (fallbackTexture.image) {
+                    material.uniforms.uTexRes.value.set(fallbackTexture.image.width || 1920, fallbackTexture.image.height || 1080);
+                }
+            }
+
+            if (statusLabel) {
+                statusLabel.textContent = 'CAM: OFF';
+                statusLabel.className = 'relative z-10 font-mono text-[11px] text-slate-300 group-hover:text-white transition-colors';
+            }
+            if (indicator) indicator.className = 'w-1.5 h-1.5 rounded-full bg-slate-500 relative z-10 group-hover:scale-125 transition-all';
+            if (stopBtn) stopBtn.classList.add('hidden');
+            if (flipBtn) flipBtn.classList.add('hidden');
+            showToast("Default Wallpaper active");
         }
 
         async function flipCameraFacing() {
@@ -1403,6 +1485,33 @@
             showToast("เปิดอีเมลพร้อมส่งไปที่ thanabordee.noun@gmail.com แล้ว!");
             form.reset();
         }
+
+        // ==========================================
+        // 4. SCROLL AUTO-HIDE FLOATING CONTROLS
+        // ==========================================
+        let lastScrollY = window.scrollY;
+        let scrollTicking = false;
+        const floatingHeader = document.getElementById('floating-header');
+
+        window.addEventListener('scroll', () => {
+            if (!scrollTicking && floatingHeader) {
+                window.requestAnimationFrame(() => {
+                    const currentScrollY = window.scrollY;
+                    if (currentScrollY > 40 && currentScrollY > lastScrollY) {
+                        // Scrolling down: smoothly hide floating button header
+                        floatingHeader.classList.add('-translate-y-24', 'opacity-0', 'pointer-events-none');
+                        floatingHeader.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+                    } else {
+                        // Scrolling up or at top: smoothly reveal floating button header
+                        floatingHeader.classList.remove('-translate-y-24', 'opacity-0', 'pointer-events-none');
+                        floatingHeader.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+                    }
+                    lastScrollY = Math.max(0, currentScrollY);
+                    scrollTicking = false;
+                });
+                scrollTicking = true;
+            }
+        }, { passive: true });
     </script>
 </body>
 </html>
